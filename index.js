@@ -1,28 +1,10 @@
-const fs = require('fs');
-require('dotenv').config();
+const { loadAllWallets, checkWalletBalances } = require('./wallets');
 
-let wallets = {};
-
-async function loadAllWallets() {
-    try {
-        // Read all wallet files from the wallets directory
-        const walletFiles = fs.readdirSync('./wallets');
-        
-        console.log('Loading wallets...\n');
-        
-        for (const walletFile of walletFiles) {
-            const walletId = walletFile.split('.')[0]; // Remove file extension
-            const walletData = JSON.parse(
-                fs.readFileSync(`./wallets/${walletFile}`, 'utf8')
-            );
-            wallets[walletId] = walletData;
-        }
-
-    } catch (error) {
-        console.error('Error checking wallets:', error);
-    }
+async function main() {
+    let wallets = await loadAllWallets();
+    console.log("Wallets loaded:", wallets);
+    
+    await checkWalletBalances(wallets);
 }
 
-loadAllWallets();
-
-console.log(wallets);
+main().catch(console.error);
