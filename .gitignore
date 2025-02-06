@@ -30,3 +30,10 @@ archive.zip
 .DS_Store
 storage/*
 notes.md
+
+# Node.js
+node_modules/
+.env
+
+# Wallet credentials
+wallet.json
