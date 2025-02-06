@@ -1,4 +1,4 @@
-const { Connection, clusterApiUrl, PublicKey, LAMPORTS_PER_SOL } = require('@solana/web3.js');
+const { Keypair, Connection, clusterApiUrl, PublicKey, LAMPORTS_PER_SOL } = require('@solana/web3.js');
 const { Token, TOKEN_PROGRAM_ID } = require('@solana/spl-token');
 const fs = require('fs');
 require('dotenv').config();
@@ -114,10 +114,42 @@ async function requestAirdropAll(wallets, solAmount = 1) {
     }
 }
 
+async function createWallet(walletId) {
+    try {
+        const connection = new Connection(clusterApiUrl('devnet'), 'confirmed');
+        
+        // Generate a new keypair
+        const wallet = Keypair.generate();
+        
+        // Create wallet data object
+        const walletData = {
+            publicKey: wallet.publicKey.toString(),
+            secretKey: Array.from(wallet.secretKey)
+        };
+        
+        // Ensure wallets directory exists
+        if (!fs.existsSync('./wallets')) {
+            fs.mkdirSync('./wallets');
+        }
+        
+        // Save to file in wallets directory
+        fs.writeFileSync(`./wallets/${walletId}.json`, JSON.stringify(walletData, null, 2));
+        
+        console.log(`Wallet "${walletId}" created successfully!`);
+        console.log('Public Key:', wallet.publicKey.toString());
+        
+        return walletData;
+    } catch (error) {
+        console.error('Error creating wallet:', error);
+        throw error;
+    }
+}
+
 module.exports = { 
     loadAllWallets, 
     checkWalletBalances, 
     checkSingleWalletBalance,
     requestAirdrop,
-    requestAirdropAll
+    requestAirdropAll,
+    createWallet
 };
