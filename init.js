@@ -6,6 +6,7 @@ async function initialize() {
     await createWallet("wallet1");
     await createWallet("wallet2");
     await createWallet("wallet3");
+    await createWallet("wallet4");
 
     let wallets = await loadAllWallets();
 

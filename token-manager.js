@@ -33,11 +33,11 @@ class TokenManager {
                 9, // 9 decimals like SOL
             );
 
-            console.log("Created mint:", mint);
-            
+            console.log("Created mintPublicKey:", mint);
+
             const tokenInfo = {
                 name,
-                mintAddress: mint.toString(),
+                publicKey: mint.toString(),
                 createdAt: new Date().toISOString(),
                 createdBy: wallet.publicKey
             };
@@ -96,33 +96,37 @@ class TokenManager {
     }
 
     // Get or create associated token account
-    async getOrCreateAssociatedTokenAccount(mint, wallet) {
+    async getOrCreateAssociatedTokenAccount(tokenInfo, wallet) {
         try {
             const keypair = this.getKeypairFromWallet(wallet);
+            const tokenPublicKey = new PublicKey(tokenInfo.publicKey);
+            const walletPublicKey = new PublicKey(wallet.publicKey);
             const associatedTokenAddress = await getAssociatedTokenAddress(
-                mint.publicKey,
-                new PublicKey(wallet.publicKey)
+                tokenPublicKey,
+                walletPublicKey
             );
 
             try {
                 const tokenAccount = await this.connection.getAccountInfo(associatedTokenAddress);
+                console.log("tokenAccount:", tokenAccount);
                 if (!tokenAccount) {
                     await createAssociatedTokenAccount(
                         this.connection,
                         keypair,
-                        mint.publicKey,
-                        new PublicKey(wallet.publicKey)
+                        tokenPublicKey,
+                        walletPublicKey
                     );
                 }
             } catch (error) {
                 await createAssociatedTokenAccount(
                     this.connection,
                     keypair,
-                    mint.publicKey,
-                    new PublicKey(wallet.publicKey)
+                    tokenPublicKey,
+                    walletPublicKey
                 );
             }
 
+            console.log("associatedTokenAddress:", associatedTokenAddress);
             return associatedTokenAddress;
         } catch (error) {
             console.error('Error getting/creating associated token account:', error);
