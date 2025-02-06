@@ -183,41 +183,24 @@ class TradeMonitor {
         this.subscriptions.clear();
         this.monitoredAddresses.clear();
     }
-
     // Run test cases in real-time simulation
     async runTestCases() {
         // Start real-time monitoring
         await this.startMonitoring();
         
-        console.log('\nRunning Test Case 1 in real-time simulation:');
-        const wallet1 = Object.values(this.wallets)[0];
-        const wallet2 = Object.values(this.wallets)[1];
+        const walletKeys = Object.keys(this.wallets);
+        const walletIdA = walletKeys[0];
+        const walletIdB = walletKeys[1];
+        const walletA = this.wallets[walletIdA];
+        const walletB = this.wallets[walletIdB];
         
-        // Test Case 1 - Now these will trigger real-time monitoring
-        await this.recordTransaction(wallet1, 'wallet1', 'xyz', 'buy', 0.4);
-        await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate time passing
-        
-        await this.recordTransaction(wallet1, 'wallet1', 'xyz', 'buy', 0.2);
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        
-        await this.recordTransaction(wallet1, 'wallet1', 'xyz', 'sell', 0.5);
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        
-        await this.recordTransaction(wallet1, 'wallet1', 'abc', 'buy', 0.2);
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        
-        await this.recordTransaction(wallet2, 'wallet2', 'xyz', 'buy', 0.05);
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        
-        await this.recordTransaction(wallet2, 'wallet2', 'abc', 'buy', 0.15);
-        
+
         console.log('\nRunning Test Case 2:');
         this.transactions = [];
-        
-        await this.recordTransaction(wallet1, 'wallet1', 'xyz', 'buy', 0.4);
+        await this.recordTransaction(walletA, walletIdA, 'xyz', 'buy', 0.4);
         await new Promise(resolve => setTimeout(resolve, 1000));
         
-        await this.recordTransaction(wallet2, 'wallet2', 'xyz', 'buy', 0.2);
+        await this.recordTransaction(walletB, walletIdB, 'xyz', 'buy', 0.2);
         
         // Keep monitoring for a while to see the results
         await new Promise(resolve => setTimeout(resolve, 5000));
