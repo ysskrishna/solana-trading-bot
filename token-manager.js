@@ -1,9 +1,10 @@
 const { Connection, clusterApiUrl, PublicKey, Keypair } = require('@solana/web3.js');
-const { createMint, createAssociatedTokenAccount, getAssociatedTokenAddress } = require('@solana/spl-token');
+const { createMint, createAssociatedTokenAccount, getAssociatedTokenAddress, mintToChecked, getMint, burnChecked } = require('@solana/spl-token');
 const fs = require('fs');
 
 
 class TokenManager {
+    TOKEN_DECIMALS = 9;
     constructor() {
         this.connection = new Connection(clusterApiUrl('devnet'), 'confirmed');
         this.tokensDirectory = './tokens';
@@ -30,7 +31,7 @@ class TokenManager {
                 keypair,
                 mintAuthority.publicKey,
                 freezeAuthority.publicKey,
-                9, // 9 decimals like SOL
+                this.TOKEN_DECIMALS
             );
 
             console.log("Created mintPublicKey:", mint);
@@ -39,8 +40,10 @@ class TokenManager {
                 name,
                 publicKey: mint.toString(),
                 createdAt: new Date().toISOString(),
-                createdBy: wallet.publicKey
+                createdBy: wallet.publicKey,
+                decimals: this.TOKEN_DECIMALS
             };
+
 
             // Save token info to disk
             this.saveTokenInfo(name, tokenInfo);
@@ -53,6 +56,14 @@ class TokenManager {
             console.error('Error creating token:', error);
             throw error;
         }
+    }
+
+    async getTokenMint(name) {
+        const tokenInfo = this.loadTokenInfo(name);
+        const tokenPublicKey =  new PublicKey(tokenInfo.publicKey);
+        let mintAccount = await getMint(this.connection, tokenPublicKey);
+        console.log("get token mint account:", mintAccount);
+        return mintAccount;
     }
 
     // Save token information to disk
@@ -137,6 +148,56 @@ class TokenManager {
     // Helper method to get keypair from wallet data
     getKeypairFromWallet(wallet) {
         return Keypair.fromSecretKey(new Uint8Array(wallet.secretKey));
+    }
+
+    async mintTokens(tokenInfo, wallet, mintAuthorityWallet, amount) {
+        try {
+            const tokenPublicKey = new PublicKey(tokenInfo.publicKey);
+            const tokenAccountAddress = await this.getOrCreateAssociatedTokenAccount(tokenInfo, wallet);
+
+            const adjustedAmount = BigInt(Math.floor(amount * Math.pow(10, tokenInfo.decimals)));
+            console.log(`Minting ${amount} tokens (${adjustedAmount} base units)`);
+            
+            let txhash = await mintToChecked(
+                this.connection,
+                this.getKeypairFromWallet(wallet),
+                tokenPublicKey,
+                tokenAccountAddress,
+                this.getKeypairFromWallet(mintAuthorityWallet),
+                adjustedAmount,
+                tokenInfo.decimals
+            );
+            console.log(`Minted tokens txhash: ${txhash}`);
+
+        } catch (error) {
+            console.error('Error minting tokens:', error);
+            throw error;
+        }
+    }
+
+    async burnTokens(tokenInfo, wallet, mintAuthorityWallet, amount) {
+        try {
+            const tokenPublicKey = new PublicKey(tokenInfo.publicKey);
+            const tokenAccountAddress = await this.getOrCreateAssociatedTokenAccount(tokenInfo, wallet);
+            
+            const adjustedAmount = BigInt(Math.floor(amount * Math.pow(10, tokenInfo.decimals)));
+            console.log(`Burning ${amount} tokens (${adjustedAmount} base units)`);
+            
+            let txhash = await burnChecked(
+                this.connection,
+                this.getKeypairFromWallet(wallet),
+                tokenPublicKey,
+                tokenAccountAddress,
+                this.getKeypairFromWallet(mintAuthorityWallet),
+                adjustedAmount,
+                tokenInfo.decimals
+            );
+            console.log(`Burned tokens txhash: ${txhash}`);
+
+        } catch (error) {
+            console.error('Error burning tokens:', error);
+            throw error;
+        }
     }
 }
 

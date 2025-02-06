@@ -1,5 +1,5 @@
-const { Connection, clusterApiUrl, PublicKey, LAMPORTS_PER_SOL } = require('@solana/web3.js');
-const { Token, TOKEN_PROGRAM_ID } = require('@solana/spl-token');
+const { Connection, clusterApiUrl, PublicKey, LAMPORTS_PER_SOL, Keypair } = require('@solana/web3.js');
+const { TokenManager } = require('./token-manager');
 
 class TradeMonitor {
     constructor(wallets, copyWallet, threshold, timeWindow) {
@@ -11,11 +11,79 @@ class TradeMonitor {
         this.connection = new Connection(clusterApiUrl('devnet'), 'confirmed');
         this.subscriptions = new Map();
         this.monitoredAddresses = new Set();
+        this.tokenAccounts = new Map(); // Store token accounts for each wallet
+        this.tokenManager = new TokenManager();
     }
 
-    // Utility function to get public key from wallet
+    // Get keypair from wallet data
+    getKeypair(wallet) {
+        return Keypair.fromSecretKey(new Uint8Array(wallet.secretKey));
+    }
+
+    // Get public key from wallet
     getPublicKey(wallet) {
         return wallet.publicKey;
+    }
+
+    // Execute a real token transaction
+    async executeTokenTransaction(wallet, tokenInfo, action, mintAuthorityWallet, amount) {
+        try {
+            if (action === 'buy') {
+                console.log("Minting tokens");
+                this.tokenManager.mintTokens(tokenInfo, wallet, mintAuthorityWallet, amount);
+
+            } else if (action === 'sell') {
+                console.log("Burning tokens");
+                this.tokenManager.burnTokens(tokenInfo, wallet, mintAuthorityWallet, amount);
+            }
+            return true;
+        } catch (error) {
+            console.error('Error executing token transaction:', error);
+            return false;
+        }
+    }
+
+    // Run test cases with real token transactions
+    async runTestCases() {
+        await this.startMonitoring();
+        
+        const walletKeys = Object.keys(this.wallets);
+        const walletIdA = walletKeys[0];
+        const walletIdB = walletKeys[1];
+        const walletA = this.wallets[walletIdA];
+        const walletB = this.wallets[walletIdB];
+        const TOKEN_NAME = "XyzToken";
+        const mintAuthorityWallet = this.wallets["wallet1"];
+
+
+        
+        let tokenInfo;
+        try {
+            tokenInfo = this.tokenManager.loadTokenInfo(TOKEN_NAME);
+        } catch (error) {
+            throw new Error(`Token ${TOKEN_NAME} not found. Please initialize the token first.`);
+        }
+
+
+
+        console.log('\nRunning Test Case 2 with real token transactions:');
+        this.transactions = [];
+
+        // Execute real token transactions with smaller amounts
+        console.log('\nExecuting first buy transaction...');
+        await this.executeTokenTransaction(walletA, tokenInfo, 'buy', mintAuthorityWallet, 0.002);
+
+
+        // console.log('\nExecuting second buy transaction...');
+        // await this.executeTokenTransaction(walletB, tokenInfo, 'buy', mintAuthorityWallet, 0.001);
+
+
+        // Keep monitoring for a while to see the results
+        console.log('\nWaiting for copy trade execution...');
+        await new Promise(resolve => setTimeout(resolve, 5000));
+
+        // Stop monitoring
+        await this.stopMonitoring();
     }
 
     // Start monitoring wallets in real-time
@@ -141,27 +209,31 @@ class TradeMonitor {
         }
     }
 
-    // Execute a copy trade
+    // Execute a real copy trade
     async executeCopyTrade(token, action) {
-        const FIXED_TRADE_AMOUNT = 0.05; // SOL
+        const FIXED_TRADE_AMOUNT = 0.001; // TODO: Reduced from 0.05 SOL to 0.001 SOL. convert back
         
         console.log(`\nExecuting copy trade:`);
-        console.log(`Wallet: ${this.copyWallet}`);
+        console.log(`Wallet: ${this.getPublicKey(this.copyWallet)}`);
         console.log(`Action: ${action}`);
         console.log(`Token: ${token}`);
         console.log(`Amount: ${FIXED_TRADE_AMOUNT} SOL`);
         
         try {
-            // Here you would implement the actual trade execution
-            // For example, using a DEX like Serum or Raydium
-            // This would involve:
-            // 1. Creating the appropriate transaction
-            // 2. Signing it with the copy wallet's keypair
-            // 3. Sending and confirming the transaction
-            
-            console.log('Trade executed successfully');
+            const success = await this.executeTokenTransaction(
+                this.copyWallet,
+                token,
+                action,
+                FIXED_TRADE_AMOUNT
+            );
+
+            if (success) {
+                console.log('Copy trade executed successfully');
+            } else {
+                console.log('Copy trade failed');
+            }
         } catch (error) {
-            console.error('Error executing trade:', error);
+            console.error('Error executing copy trade:', error);
         }
     }
 
@@ -182,31 +254,6 @@ class TradeMonitor {
         
         this.subscriptions.clear();
         this.monitoredAddresses.clear();
-    }
-    // Run test cases in real-time simulation
-    async runTestCases() {
-        // Start real-time monitoring
-        await this.startMonitoring();
-        
-        const walletKeys = Object.keys(this.wallets);
-        const walletIdA = walletKeys[0];
-        const walletIdB = walletKeys[1];
-        const walletA = this.wallets[walletIdA];
-        const walletB = this.wallets[walletIdB];
-        
-
-        console.log('\nRunning Test Case 2:');
-        this.transactions = [];
-        await this.recordTransaction(walletA, walletIdA, 'xyz', 'buy', 0.4);
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        
-        await this.recordTransaction(walletB, walletIdB, 'xyz', 'buy', 0.2);
-        
-        // Keep monitoring for a while to see the results
-        await new Promise(resolve => setTimeout(resolve, 5000));
-        
-        // Stop monitoring
-        await this.stopMonitoring();
     }
 }
 

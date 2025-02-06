@@ -2,5 +2,6 @@
   "name": "XyzToken",
   "publicKey": "MKwuEpRrheRwUAXsrSJ27wShUdNeUbiA6633AGfAXpr",
   "createdAt": "2025-02-06T18:59:44.069Z",
-  "createdBy": "9ahgacYqbs1Kt7svHz8MxgFosRasWqYR32zbrxyQAE6k"
+  "createdBy": "9ahgacYqbs1Kt7svHz8MxgFosRasWqYR32zbrxyQAE6k",
+  "decimals": 9
 }
