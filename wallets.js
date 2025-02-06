@@ -77,8 +77,47 @@ async function checkSingleWalletBalance(walletAddress) {
     }
 }
 
+async function requestAirdrop(walletAddress, solAmount = 1) {
+    try {
+        const connection = new Connection(clusterApiUrl('devnet'), 'confirmed');
+        const publicKey = new PublicKey(walletAddress);
+        
+        console.log(`Requesting airdrop of ${solAmount} SOL for wallet: ${walletAddress}`);
+        
+        const signature = await connection.requestAirdrop(
+            publicKey,
+            solAmount * LAMPORTS_PER_SOL
+        );
+        
+        await connection.confirmTransaction(signature);
+        console.log('Airdrop successful!');
+        
+        // Check and display new balance
+        const newBalance = await connection.getBalance(publicKey);
+        console.log(`New balance: ${newBalance / LAMPORTS_PER_SOL} SOL`);
+        
+    } catch (error) {
+        console.error('Error requesting airdrop:', error);
+    }
+}
+
+async function requestAirdropAll(wallets, solAmount = 1) {
+    try {
+        console.log(`Requesting ${solAmount} SOL airdrop for all wallets...\n`);
+        
+        for (const [walletId, walletData] of Object.entries(wallets)) {
+            console.log(`\nProcessing wallet: ${walletId}`);
+            await requestAirdrop(walletData.publicKey, solAmount);
+        }
+    } catch (error) {
+        console.error('Error requesting airdrops:', error);
+    }
+}
+
 module.exports = { 
     loadAllWallets, 
     checkWalletBalances, 
-    checkSingleWalletBalance 
+    checkSingleWalletBalance,
+    requestAirdrop,
+    requestAirdropAll
 };
