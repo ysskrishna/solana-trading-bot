@@ -130,48 +130,6 @@ class TradeMonitor {
         }
     }
 
-    // Run test cases with real token transactions
-    async runTestCases() {
-        await this.startMonitoring();
-        
-        const walletKeys = Object.keys(this.wallets);
-        const walletIdA = walletKeys[0];
-        const walletIdB = walletKeys[1];
-        const walletA = this.wallets[walletIdA];
-        const walletB = this.wallets[walletIdB];
-        const TOKEN_NAME = Config.tokenName;
-        const mintAuthorityWallet = this.wallets["wallet1"];
-
-
-        
-        let tokenInfo;
-        try {
-            tokenInfo = this.tokenManager.loadTokenInfo(TOKEN_NAME);
-        } catch (error) {
-            throw new Error(`Token ${TOKEN_NAME} not found. Please initialize the token first.`);
-        }
-
-
-
-        console.log('\nRunning Test Case 2 with real token transactions:');
-        this.transactions = [];
-
-        // Execute real token transactions with smaller amounts
-        console.log('\nExecuting first buy transaction...');
-        await this.executeTokenTransaction(walletA, tokenInfo, 'buy', mintAuthorityWallet, 0.002);
-
-        console.log('\nExecuting second buy transaction...');
-        await this.executeTokenTransaction(walletB, tokenInfo, 'buy', mintAuthorityWallet, 0.001);
-
-
-        // Keep monitoring for a while to see the results
-        console.log('\nWaiting for copy trade execution...');
-        await new Promise(resolve => setTimeout(resolve, 5000));
-
-        // Stop monitoring
-        await this.stopMonitoring();
-    }
-
     // Start monitoring wallets in real-time
     async startMonitoring() {
         console.log('\nStarting real-time wallet monitoring...');

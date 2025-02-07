@@ -24,22 +24,19 @@ async function main() {
 
     // console.log("Monitored wallets:", monitoredWallets);
     // console.log("Copy wallet:", copyWallet);
+
     
-    const monitor = new TradeMonitor(monitoredWallets, copyWallet, Config.threshold, Config.timeWindow);
+    // Start monitoring
+    const tradeMonitor = new TradeMonitor(monitoredWallets, copyWallet, Config.threshold, Config.timeWindow);
+    await tradeMonitor.startMonitoring();
+    console.log('Monitoring service is running. Press Ctrl+C to stop.');
 
     // Handle graceful shutdown
     process.on('SIGINT', async () => {
         console.log('\nReceived SIGINT. Cleaning up...');
-        await monitor.stopMonitoring();
+        await tradeMonitor.stopMonitoring();
         process.exit(0);
     });
-
-    // Run the test cases with real-time monitoring
-    await monitor.runTestCases();
-
-
-    console.log(`AFTER TESTING: Logging wallet balances for all ${allWallets.length} wallets`);
-    await checkBalancesForWallets(allWallets);
 }
 
 main().catch(console.error);
