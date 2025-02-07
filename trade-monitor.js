@@ -1,5 +1,6 @@
 const { Connection, clusterApiUrl, PublicKey, LAMPORTS_PER_SOL, Keypair } = require('@solana/web3.js');
 const { TokenManager } = require('./token-manager');
+const { Config } = require('./config');
 
 class TradeMonitor {
     constructor(wallets, copyWallet, threshold, timeWindow) {
@@ -52,7 +53,7 @@ class TradeMonitor {
         const walletIdB = walletKeys[1];
         const walletA = this.wallets[walletIdA];
         const walletB = this.wallets[walletIdB];
-        const TOKEN_NAME = "XyzToken";
+        const TOKEN_NAME = Config.tokenName;
         const mintAuthorityWallet = this.wallets["wallet1"];
 
 

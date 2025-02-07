@@ -4,7 +4,7 @@ const fs = require('fs');
 require('dotenv').config();
 
 
-async function loadAllWallets() {
+async function loadWalletsFromDirectory() {
     let wallets = {};
     try {
         // Read all wallet files from the wallets directory
@@ -27,13 +27,13 @@ async function loadAllWallets() {
     return wallets;
 }
 
-async function checkWalletBalances(wallets) {
+async function checkBalancesForWallets(wallets) {
     try {
         console.log('Checking wallet balances...\n');
         
         for (const [walletId, walletData] of Object.entries(wallets)) {
             console.log(`\nChecking wallet: ${walletId}`);
-            await checkSingleWalletBalance(walletData.publicKey);
+            await checkBalanceForWallet(walletData.publicKey);
         }
     } catch (error) {
         console.error('Error checking wallets:', error);
@@ -43,7 +43,7 @@ async function checkWalletBalances(wallets) {
 
 
 // Function to check a single wallet balance
-async function checkSingleWalletBalance(walletAddress) {
+async function checkBalanceForWallet(walletAddress) {
     try {
         const connection = new Connection(clusterApiUrl('devnet'), 'confirmed');
         const publicKey = new PublicKey(walletAddress);
@@ -77,14 +77,14 @@ async function checkSingleWalletBalance(walletAddress) {
     }
 }
 
-async function requestAirdrop(walletAddress, solAmount = 1) {
+async function requestAirdropForWallet(walletAddress, solAmount = 1) {
     try {
         const connection = new Connection(clusterApiUrl('devnet'), 'confirmed');
         const publicKey = new PublicKey(walletAddress);
         
         console.log(`Requesting airdrop of ${solAmount} SOL for wallet: ${walletAddress}`);
         
-        const signature = await connection.requestAirdrop(
+        const signature = await connection.requestAirdropForWallet(
             publicKey,
             solAmount * LAMPORTS_PER_SOL
         );
@@ -101,13 +101,13 @@ async function requestAirdrop(walletAddress, solAmount = 1) {
     }
 }
 
-async function requestAirdropAll(wallets, solAmount = 1) {
+async function requestAirdropForWallets(wallets, solAmount = 1) {
     try {
         console.log(`Requesting ${solAmount} SOL airdrop for all wallets...\n`);
         
         for (const [walletId, walletData] of Object.entries(wallets)) {
             console.log(`\nProcessing wallet: ${walletId}`);
-            await requestAirdrop(walletData.publicKey, solAmount);
+            await requestAirdropForWallet(walletData.publicKey, solAmount);
         }
     } catch (error) {
         console.error('Error requesting airdrops:', error);
@@ -115,9 +115,7 @@ async function requestAirdropAll(wallets, solAmount = 1) {
 }
 
 async function createWallet(walletId) {
-    try {
-        const connection = new Connection(clusterApiUrl('devnet'), 'confirmed');
-        
+    try {        
         // Generate a new keypair
         const wallet = Keypair.generate();
         
@@ -145,11 +143,35 @@ async function createWallet(walletId) {
     }
 }
 
+async function loadWalletByWalletId(walletId) {
+    try {
+        const walletPath = `./wallets/${walletId}.json`;
+        
+        // Check if wallet file exists
+        if (!fs.existsSync(walletPath)) {
+            throw new Error(`Wallet "${walletId}" not found`);
+        }
+
+        // Read and parse wallet data
+        const walletData = JSON.parse(
+            fs.readFileSync(walletPath, 'utf8')
+        );
+        
+        console.log(`Loaded wallet: ${walletId}`);
+        return walletData;
+        
+    } catch (error) {
+        console.error(`Error loading wallet ${walletId}:`, error);
+        throw error;
+    }
+}
+
 module.exports = { 
-    loadAllWallets, 
-    checkWalletBalances, 
-    checkSingleWalletBalance,
-    requestAirdrop,
-    requestAirdropAll,
+    loadWalletsFromDirectory, 
+    loadWalletByWalletId,
+    checkBalancesForWallets, 
+    checkBalanceForWallet,
+    requestAirdropForWallet,
+    requestAirdropForWallets,
     createWallet
 };
