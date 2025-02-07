@@ -1,19 +1,60 @@
 {
   "name": "solana-trading-bot",
   "version": "1.0.0",
-  "description": "A trading bot for Solana",
+  "private": true,
+  "description": "A trading bot for Solana that monitors wallet activities and performs copy trading based on configurable thresholds",
+  "author": {
+    "name": "ysskrishna",
+    "url": "https://github.com/ysskrishna"
+  },
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node index.js"
+    "initialize": "node initialize.js",
+    "start": "node index.js",
+    "test:case1": "node run-tests.js 1",
+    "test:case2": "node run-tests.js 2",
+    "test:case3": "node run-tests.js 3",
+    "test:case4": "node run-tests.js 4"
   },
-  "keywords": [],
-  "author": "ysskrishna",
-  "license": "ISC",
+  "keywords": [
+    "solana",
+    "blockchain",
+    "trading-bot",
+    "cryptocurrency",
+    "defi",
+    "copy-trading",
+    "wallet-monitoring",
+    "spl-token",
+    "web3",
+    "automated-trading",
+    "solana-program",
+    "token-trading",
+    "blockchain-automation",
+    "crypto-bot",
+    "solana-wallet",
+    "token-management",
+    "real-time-monitoring",
+    "threshold-trading",
+    "solana-development",
+    "crypto-automation",
+    "ysskrishna"
+  ],
+  "license": "AGPL-3.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ysskrishna/solana-trading-bot"
+  },
+  "bugs": {
+    "url": "https://github.com/ysskrishna/solana-trading-bot/issues"
+  },
+  "homepage": "https://github.com/ysskrishna/solana-trading-bot#readme",
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.8.0"
+  },
   "dependencies": {
     "@solana/spl-token": "^0.4.12",
     "@solana/web3.js": "^1.98.0",
-    "bs58": "^6.0.0",
-    "dotenv": "^16.4.7"
+    "bs58": "^6.0.0"
   }
 }
