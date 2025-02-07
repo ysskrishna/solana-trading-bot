@@ -36,7 +36,7 @@ class TradeMonitor {
                 programId: TOKEN_PROGRAM_ID
             });
 
-            console.log("tokenAccounts length: ", tokenAccounts.value.length);
+            console.log(`Found ${tokenAccounts.value.length} ATAs length for waller ${this.getPublicKey(wallet)}`);
             let atas = [];
             if (tokenAccounts.value.length > 0) {
                 for (const tokenAccount of tokenAccounts.value) {
@@ -112,24 +112,6 @@ class TradeMonitor {
         }
     }
 
-    // Execute a real token transaction
-    async executeTokenTransaction(wallet, tokenInfo, action, mintAuthorityWallet, amount) {
-        try {
-            if (action === 'buy') {
-                console.log("Minting tokens");
-                this.tokenManager.mintTokens(tokenInfo, wallet, mintAuthorityWallet, amount);
-
-            } else if (action === 'sell') {
-                console.log("Burning tokens");
-                this.tokenManager.burnTokens(tokenInfo, wallet, mintAuthorityWallet, amount);
-            }
-            return true;
-        } catch (error) {
-            console.error('Error executing token transaction:', error);
-            return false;
-        }
-    }
-
     // Start monitoring wallets in real-time
     async startMonitoring() {
         console.log('\nStarting real-time wallet monitoring...');
@@ -157,7 +139,6 @@ class TradeMonitor {
             const atas = await this.fetchATAs(wallet);
             console.log(`Fetched ${walletId} atas length: ${atas.length}`);
             for (const ata of atas) {
-                console.log(`Monitoring ATA: ${ata.pubkey} for wallet ${walletId}`);
                 await this.monitorATA(ata, wallet, walletId);
             }
             
@@ -280,23 +261,16 @@ class TradeMonitor {
         console.log(`Amount: ${FIXED_TRADE_AMOUNT} SOL`);
         
         try {
-            // Load token info first
-            const tokenInfo = this.tokenManager.loadTokenInfo(Config.tokenName);
             const mintAuthorityWallet = this.wallets["wallet1"]; // Get mint authority wallet
-
-            const success = await this.executeTokenTransaction(
+            await this.tokenManager.executeTokenTransaction(
                 this.copyWallet,
-                tokenInfo,
+                Config.tokenName, // TODO: fix to use tokename obtained from token above
                 action,
                 mintAuthorityWallet,
                 FIXED_TRADE_AMOUNT
             );
 
-            if (success) {
-                console.log('Copy trade executed successfully');
-            } else {
-                console.log('Copy trade failed');
-            }
+            console.log('Copy trade executed successfully');            
         } catch (error) {
             console.error('Error executing copy trade:', error);
         }

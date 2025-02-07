@@ -1,10 +1,9 @@
-const { TradeMonitor } = require('./trade-monitor');
-const { Config } = require('./config');
 const { TokenManager } = require('./token-manager');
+const { Config } = require('./config');
+const { loadWalletByWalletId } = require("./wallets");
 
 class TestRunner {
-    constructor(tradeMonitor) {
-        this.tradeMonitor = tradeMonitor;
+    constructor() {
         this.tokenManager = new TokenManager();
     }
 
@@ -30,60 +29,66 @@ class TestRunner {
                     { time: 10, walletId: 'wallet1', action: 'buy', amount: 0.4, token: Config.tokenName },
                     { time: 14, walletId: 'wallet2', action: 'buy', amount: 0.2, token: Config.tokenName }
                 ];
+            case '3':
+                // simplified test case of case 1, with smaller amounts
+                return [
+                    { time: 2, walletId: 'wallet1', action: 'buy', amount: 0.004, token: Config.tokenName },
+                    { time: 6, walletId: 'wallet1', action: 'buy', amount: 0.002, token: Config.tokenName },
+                    { time: 10, walletId: 'wallet1', action: 'sell', amount: 0.005, token: Config.tokenName },
+                    { time: 12, walletId: 'wallet1', action: 'buy', amount: 0.002, token: Config.tokenName },
+                    { time: 18, walletId: 'wallet2', action: 'buy', amount: 0.0005, token: Config.tokenName },
+                    { time: 22, walletId: 'wallet2', action: 'buy', amount: 0.0015, token: Config.tokenName }
+                ];
+            case '4':
+                // simplified test case of case 2, with smaller amounts
+                return [
+                    { time: 2, walletId: 'wallet1', action: 'buy', amount: 0.002, token: Config.tokenName },
+                    { time: 6, walletId: 'wallet2', action: 'buy', amount: 0.001, token: Config.tokenName }
+                ];
             default:
                 throw new Error('Invalid test case number');
         }
+
     }
 
     async executeTestTransactions(transactions) {
-        const mintAuthorityWallet = this.tradeMonitor.wallets["wallet1"];
-
+        const mintAuthorityWallet = await loadWalletByWalletId("wallet1");
         let startTime = Date.now();
+
+
+
         for (const tx of transactions) {
-            const wallet = this.tradeMonitor.wallets[tx.walletId];
+            const wallet = await loadWalletByWalletId(tx.walletId);
             const timeToWait = (tx.time * 60 * 1000) - (Date.now() - startTime);
             
+
             if (timeToWait > 0) {
                 console.log(`Waiting ${timeToWait/1000} seconds for next transaction...`);
                 await new Promise(resolve => setTimeout(resolve, timeToWait));
             }
 
-            let tokenInfo;
-            try {
-                tokenInfo = this.tokenManager.loadTokenInfo(tx.token);
-            } catch (error) {
-                throw new Error(`Token ${tx.token} not found. Please initialize the token first.`);
-            }
-
             console.log(`\nExecuting ${tx.action} transaction for ${tx.walletId}...`);
-            await this.tradeMonitor.executeTokenTransaction(
+            await this.tokenManager.executeTokenTransaction(
                 wallet,
-                tokenInfo,
+                tx.token,
                 tx.action,
                 mintAuthorityWallet,
                 tx.amount
-            );
+            );            
+            console.log(`Successfully executed ${tx.action} transaction for ${tx.walletId}`);
         }
     }
 }
 
 async function main() {
     const testCase = process.argv[2];
-    if (!testCase || !['1', '2'].includes(testCase)) {
+    if (!testCase || !['1', '2', '3', '4'].includes(testCase)) {
         console.error('Please specify a test case number (1 or 2)');
         console.log('Usage: node run-tests.js <test-case-number>');
         process.exit(1);
     }
 
-    // Initialize trade monitor (without starting monitoring)
-    const tradeMonitor = new TradeMonitor(
-        Config.wallets,
-        Config.copyWallet,
-        Config.threshold,
-        Config.timeWindow
-    );
-
-    const testRunner = new TestRunner(tradeMonitor);
+    const testRunner = new TestRunner();
 
     try {
         await testRunner.runTest(testCase);

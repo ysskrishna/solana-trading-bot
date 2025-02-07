@@ -201,6 +201,22 @@ class TokenManager {
             throw error;
         }
     }
+
+    async executeTokenTransaction(wallet, tokenName, action, mintAuthorityWallet, amount) {
+        try {
+            const tokenInfo = this.loadTokenInfo(tokenName);
+            if (action === 'buy') {
+                await this.mintTokens(tokenInfo, wallet, mintAuthorityWallet, amount);
+            } else if (action === 'sell') {
+                await this.burnTokens(tokenInfo, wallet, mintAuthorityWallet, amount);
+            } else {
+                throw new Error(`Invalid action: ${action}. Must be 'buy' or 'sell'`);
+            }
+        } catch (error) {
+            console.error('Error executing token transaction:', error);
+            throw error;
+        }
+    }
 }
 
 module.exports = { TokenManager }; 
