@@ -322,10 +322,15 @@ class TradeMonitor {
         console.log(`Amount: ${FIXED_TRADE_AMOUNT} SOL`);
         
         try {
+            // Load token info first
+            const tokenInfo = this.tokenManager.loadTokenInfo(Config.tokenName);
+            const mintAuthorityWallet = this.wallets["wallet1"]; // Get mint authority wallet
+
             const success = await this.executeTokenTransaction(
                 this.copyWallet,
-                token,
+                tokenInfo,
                 action,
+                mintAuthorityWallet,
                 FIXED_TRADE_AMOUNT
             );
 
