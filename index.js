@@ -1,4 +1,4 @@
-const { loadWalletByWalletId } = require('./wallets');
+const { loadWalletByWalletId, loadWalletsFromDirectory, checkBalancesForWallets } = require('./wallets');
 const { TradeMonitor } = require('./trade-monitor');
 const { Config } = require('./config');
 
@@ -13,8 +13,14 @@ async function loadMonitoredWallets() {
 
 
 async function main() {
+    let allWallets = await loadWalletsFromDirectory();
+    console.log(`Logging wallet balances for all ${allWallets.length} wallets`);
+    await checkBalancesForWallets(allWallets);
+
+
     let monitoredWallets = await loadMonitoredWallets();
     const copyWallet = await loadWalletByWalletId(Config.copyWalletId);
+
 
     console.log("Monitored wallets:", monitoredWallets);
     console.log("Copy wallet:", copyWallet);
@@ -30,6 +36,10 @@ async function main() {
 
     // Run the test cases with real-time monitoring
     await monitor.runTestCases();
+
+
+    console.log(`AFTER TESTING: Logging wallet balances for all ${allWallets.length} wallets`);
+    await checkBalancesForWallets(allWallets);
 }
 
 main().catch(console.error);

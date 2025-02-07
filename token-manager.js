@@ -1,15 +1,16 @@
 const { Connection, clusterApiUrl, PublicKey, Keypair } = require('@solana/web3.js');
 const { createMint, createAssociatedTokenAccount, getAssociatedTokenAddress, mintToChecked, getMint, burnChecked } = require('@solana/spl-token');
 const fs = require('fs');
-
+const { Config } = require('./config');
 
 class TokenManager {
     TOKEN_DECIMALS = 9;
     constructor() {
-        this.connection = new Connection(clusterApiUrl('devnet'), 'confirmed');
+        this.connection = new Connection(clusterApiUrl(Config.network), 'confirmed');
         this.tokensDirectory = './tokens';
         this.ensureTokensDirectory();
     }
+
 
     ensureTokensDirectory() {
         if (!fs.existsSync(this.tokensDirectory)) {

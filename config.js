@@ -1,4 +1,5 @@
 const Config = {
+    network: 'devnet',
     threshold: 2,
     timeWindow: 15,
     copyWalletId: 'copier',

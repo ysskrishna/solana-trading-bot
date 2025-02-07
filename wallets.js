@@ -1,7 +1,7 @@
 const { Keypair, Connection, clusterApiUrl, PublicKey, LAMPORTS_PER_SOL } = require('@solana/web3.js');
-const { Token, TOKEN_PROGRAM_ID } = require('@solana/spl-token');
+const { TOKEN_PROGRAM_ID } = require('@solana/spl-token');
 const fs = require('fs');
-require('dotenv').config();
+const { Config } = require('./config');
 
 
 async function loadWalletsFromDirectory() {
@@ -45,7 +45,7 @@ async function checkBalancesForWallets(wallets) {
 // Function to check a single wallet balance
 async function checkBalanceForWallet(walletAddress) {
     try {
-        const connection = new Connection(clusterApiUrl('devnet'), 'confirmed');
+        const connection = new Connection(clusterApiUrl(Config.network), 'confirmed');
         const publicKey = new PublicKey(walletAddress);
 
         
@@ -79,7 +79,7 @@ async function checkBalanceForWallet(walletAddress) {
 
 async function requestAirdropForWallet(walletAddress, solAmount = 1) {
     try {
-        const connection = new Connection(clusterApiUrl('devnet'), 'confirmed');
+        const connection = new Connection(clusterApiUrl(Config.network), 'confirmed');
         const publicKey = new PublicKey(walletAddress);
         
         console.log(`Requesting airdrop of ${solAmount} SOL for wallet: ${walletAddress}`);

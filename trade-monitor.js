@@ -9,7 +9,7 @@ class TradeMonitor {
         this.threshold = threshold;
         this.timeWindow = timeWindow * 60 * 1000; // Convert minutes to milliseconds
         this.transactions = [];
-        this.connection = new Connection(clusterApiUrl('devnet'), 'confirmed');
+        this.connection = new Connection(clusterApiUrl(Config.network), 'confirmed');
         this.subscriptions = new Map();
         this.monitoredAddresses = new Set();
         this.tokenAccounts = new Map(); // Store token accounts for each wallet
