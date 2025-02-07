@@ -120,8 +120,8 @@ class TokenManager {
 
             try {
                 const tokenAccount = await this.connection.getAccountInfo(associatedTokenAddress);
-                console.log(`initial ${walletPublicKey} Token Account`, tokenAccount);
                 if (!tokenAccount) {
+                    console.log(`initial wallet ${walletPublicKey} Token Account has found`);
                     await createAssociatedTokenAccount(
                         this.connection,
                         keypair,
@@ -130,6 +130,7 @@ class TokenManager {
                     );
                 }
             } catch (error) {
+                console.log(`Error: creating new wallet ${walletPublicKey} Token Account`);
                 await createAssociatedTokenAccount(
                     this.connection,
                     keypair,
