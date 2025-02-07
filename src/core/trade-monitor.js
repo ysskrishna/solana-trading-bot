@@ -1,8 +1,9 @@
 const { Connection, clusterApiUrl, PublicKey, LAMPORTS_PER_SOL, Keypair } = require('@solana/web3.js');
 const { TOKEN_PROGRAM_ID } = require('@solana/spl-token');
 const { TokenManager } = require('@src/core/token-manager');
-const { Config } = require('@src/core/config');
+const { Config, tokenAuthorityMap, tokenPublicKeyTokenNameMap } = require('@src/core/config');
 const logger = require('@src/core/logger');
+const { loadWalletByWalletId } = require('@src/core/wallets');
 
 class TradeMonitor {
     constructor(wallets, copyWallet, threshold, timeWindow) {
@@ -178,7 +179,10 @@ class TradeMonitor {
             // Continue monitoring other token operations
             if (logStr.includes('Instruction: MintToChecked')) {
                 const tokenMatch = logStr.match(/token:?\s*([A-Za-z0-9]{32,})/i);
-                const token = tokenMatch ? tokenMatch[1] : Config.tokenName;
+                if (!tokenMatch) {
+                    throw new Error('Token not found in transaction logs');
+                }
+                const token = tokenMatch[1];
                 const amountMatch = logStr.match(/amount:?\s*([\d.]+)/i);
                 const decimalsMatch = logStr.match(/decimals:?\s*(\d+)/i);
                 
@@ -190,7 +194,10 @@ class TradeMonitor {
                 }
             } else if (logStr.includes('Instruction: BurnChecked')) {
                 const tokenMatch = logStr.match(/token:?\s*([A-Za-z0-9]{32,})/i);
-                const token = tokenMatch ? tokenMatch[1] : Config.tokenName;
+                if (!tokenMatch) {
+                    throw new Error('Token not found in transaction logs');
+                }
+                const token = tokenMatch[1];
                 const amountMatch = logStr.match(/amount:?\s*([\d.]+)/i);
                 const decimalsMatch = logStr.match(/decimals:?\s*(\d+)/i);
                 
@@ -258,12 +265,14 @@ class TradeMonitor {
         logger.info(`Action: ${action}`);
         logger.info(`Token: ${token}`);
         logger.info(`Amount: ${FIXED_TRADE_AMOUNT} SOL`);
+        const tokenName = tokenPublicKeyTokenNameMap[token];
+        logger.info(`Token Name: ${tokenName}`);
 
         try {
-            const mintAuthorityWallet = this.wallets["wallet1"]; // Get mint authority wallet
+            const mintAuthorityWallet = await loadWalletByWalletId(tokenAuthorityMap[tokenName]);
             await this.tokenManager.executeTokenTransaction(
                 this.copyWallet,
-                Config.tokenName, // TODO: fix to use tokename obtained from token above
+                tokenName,
                 action,
                 mintAuthorityWallet,
                 FIXED_TRADE_AMOUNT

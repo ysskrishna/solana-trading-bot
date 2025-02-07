@@ -190,8 +190,8 @@ class TokenManager {
             let txhash = await burnChecked(
                 this.connection,
                 this.getKeypairFromWallet(wallet),
-                tokenPublicKey,
                 tokenAccountAddress,
+                tokenPublicKey,
                 this.getKeypairFromWallet(mintAuthorityWallet),
                 adjustedAmount,
                 tokenInfo.decimals

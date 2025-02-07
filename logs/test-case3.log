@@ -1,0 +1,109 @@
+{"level":"info","message":"Loading wallets...","timestamp":"2025-02-07 19:42:31"}
+{"level":"info","message":"Logging wallet balances for all 4 wallets","timestamp":"2025-02-07 19:42:31"}
+{"level":"info","message":"Checking wallet balances...","timestamp":"2025-02-07 19:42:31"}
+{"level":"info","message":"Checking wallet: copier","timestamp":"2025-02-07 19:42:31"}
+{"level":"info","message":"Wallet balance details - Address: FkFPuQwnCYhSoiRt3ysBZzpmXFT4Wr68HzZ5rAEkBsNZ, Balance: 997875720","timestamp":"2025-02-07 19:42:31"}
+{"level":"info","message":"Token balance for FkFPuQwnCYhSoiRt3ysBZzpmXFT4Wr68HzZ5rAEkBsNZ: 0.008","timestamp":"2025-02-07 19:42:31"}
+{"level":"info","message":"Checking wallet: wallet1","timestamp":"2025-02-07 19:42:31"}
+{"level":"info","message":"Wallet balance details - Address: 9ahgacYqbs1Kt7svHz8MxgFosRasWqYR32zbrxyQAE6k, Balance: 1991889320","timestamp":"2025-02-07 19:42:31"}
+{"level":"info","message":"Token balance for 9ahgacYqbs1Kt7svHz8MxgFosRasWqYR32zbrxyQAE6k: 0.061","timestamp":"2025-02-07 19:42:31"}
+{"level":"info","message":"Checking wallet: wallet2","timestamp":"2025-02-07 19:42:31"}
+{"level":"info","message":"Wallet balance details - Address: 9kF1sGUSjeHQ31eFa7SuqvuGEHQLZYywGDjQrLTHEjFW, Balance: 997715720","timestamp":"2025-02-07 19:42:31"}
+{"level":"info","message":"Token balance for 9kF1sGUSjeHQ31eFa7SuqvuGEHQLZYywGDjQrLTHEjFW: 0.024","timestamp":"2025-02-07 19:42:31"}
+{"level":"info","message":"Checking wallet: wallet3","timestamp":"2025-02-07 19:42:31"}
+{"level":"info","message":"Wallet balance details - Address: 6Xo5tPMGeUJdGaa7rhXMRwmHMp7taGGtFeiN4hHGQb64, Balance: 1000000000","timestamp":"2025-02-07 19:42:31"}
+{"level":"info","message":"No token accounts found for wallet: 6Xo5tPMGeUJdGaa7rhXMRwmHMp7taGGtFeiN4hHGQb64","timestamp":"2025-02-07 19:42:31"}
+{"level":"info","message":"Wallet loaded successfully: wallet1","timestamp":"2025-02-07 19:42:31"}
+{"level":"info","message":"Wallet loaded successfully: wallet2","timestamp":"2025-02-07 19:42:31"}
+{"level":"info","message":"Wallet loaded successfully: wallet3","timestamp":"2025-02-07 19:42:31"}
+{"level":"info","message":"Wallet loaded successfully: copier","timestamp":"2025-02-07 19:42:31"}
+{"level":"info","message":"Starting real-time wallet monitoring...","timestamp":"2025-02-07 19:42:31"}
+{"level":"info","message":"Setting up monitoring for wallet wallet1 (9ahgacYqbs1Kt7svHz8MxgFosRasWqYR32zbrxyQAE6k)","timestamp":"2025-02-07 19:42:31"}
+{"level":"info","message":"Found 1 ATAs for wallet 9ahgacYqbs1Kt7svHz8MxgFosRasWqYR32zbrxyQAE6k","timestamp":"2025-02-07 19:42:31"}
+{"level":"info","message":"Fetched 1 ATAs for wallet 9ahgacYqbs1Kt7svHz8MxgFosRasWqYR32zbrxyQAE6k","timestamp":"2025-02-07 19:42:31"}
+{"level":"info","message":"Fetched wallet1 atas length: 1","timestamp":"2025-02-07 19:42:31"}
+{"level":"info","message":"Monitoring ATA: Df1Tb12tykF2vq3kpU5w1ictGJDBaUob4JkmVCcPaXdW for wallet wallet1","timestamp":"2025-02-07 19:42:31"}
+{"level":"info","message":"Setting up monitoring for wallet wallet2 (9kF1sGUSjeHQ31eFa7SuqvuGEHQLZYywGDjQrLTHEjFW)","timestamp":"2025-02-07 19:42:31"}
+{"level":"info","message":"Found 1 ATAs for wallet 9kF1sGUSjeHQ31eFa7SuqvuGEHQLZYywGDjQrLTHEjFW","timestamp":"2025-02-07 19:42:31"}
+{"level":"info","message":"Fetched 1 ATAs for wallet 9kF1sGUSjeHQ31eFa7SuqvuGEHQLZYywGDjQrLTHEjFW","timestamp":"2025-02-07 19:42:31"}
+{"level":"info","message":"Fetched wallet2 atas length: 1","timestamp":"2025-02-07 19:42:31"}
+{"level":"info","message":"Monitoring ATA: CsKBsor6epcKTHRGzC1sKUjiyCzDJgHtsDSjcVFfH6SG for wallet wallet2","timestamp":"2025-02-07 19:42:31"}
+{"level":"info","message":"Setting up monitoring for wallet wallet3 (6Xo5tPMGeUJdGaa7rhXMRwmHMp7taGGtFeiN4hHGQb64)","timestamp":"2025-02-07 19:42:31"}
+{"level":"info","message":"Found 0 ATAs for wallet 6Xo5tPMGeUJdGaa7rhXMRwmHMp7taGGtFeiN4hHGQb64","timestamp":"2025-02-07 19:42:31"}
+{"level":"info","message":"Fetched 0 ATAs for wallet 6Xo5tPMGeUJdGaa7rhXMRwmHMp7taGGtFeiN4hHGQb64","timestamp":"2025-02-07 19:42:31"}
+{"level":"info","message":"Fetched wallet3 atas length: 0","timestamp":"2025-02-07 19:42:31"}
+{"level":"info","message":"Monitoring service is running. Press Ctrl+C to stop.","timestamp":"2025-02-07 19:42:31"}
+{"level":"info","message":"Running Test Case 3:","timestamp":"2025-02-07 19:42:39"}
+{"level":"info","message":"Wallet loaded successfully: wallet1","timestamp":"2025-02-07 19:42:39"}
+{"level":"info","message":"Wallet loaded successfully: wallet1","timestamp":"2025-02-07 19:42:39"}
+{"level":"info","message":"Waiting 119.995 seconds for next transaction...","timestamp":"2025-02-07 19:42:39"}
+{"level":"info","message":"Executing buy transaction for wallet1...","timestamp":"2025-02-07 19:44:39"}
+{"level":"info","message":"Associated Token Address for 9ahgacYqbs1Kt7svHz8MxgFosRasWqYR32zbrxyQAE6k: Df1Tb12tykF2vq3kpU5w1ictGJDBaUob4JkmVCcPaXdW","timestamp":"2025-02-07 19:44:39"}
+{"level":"info","message":"Minting 0.004 tokens (4000000 base units)","timestamp":"2025-02-07 19:44:39"}
+{"level":"info","message":"Minted tokens txhash: 3y9hRrzZFQEWDvQk4yhXsxBL7KjarCkujJZQq77UqVCufooeBPuBvQJtCpS3EzyKe4N1Lnz3BQRqwckKz5U1aAKe","timestamp":"2025-02-07 19:44:40"}
+{"level":"info","message":"Successfully executed buy transaction for wallet1","timestamp":"2025-02-07 19:44:40"}
+{"level":"info","message":"Wallet loaded successfully: wallet1","timestamp":"2025-02-07 19:44:40"}
+{"level":"info","message":"Wallet loaded successfully: wallet1","timestamp":"2025-02-07 19:44:40"}
+{"level":"info","message":"Waiting 238.999 seconds for next transaction...","timestamp":"2025-02-07 19:44:40"}
+{"level":"info","message":"recordTransaction walletId: wallet1, Token: MKwuEpRrheRwUAXsrSJ27wShUdNeUbiA6633AGfAXpr, Action: buy, Amount: 0.004","timestamp":"2025-02-07 19:44:40"}
+{"level":"info","message":"Transaction recorded: Wallet wallet1 (9ahgacYqbs1Kt7svHz8MxgFosRasWqYR32zbrxyQAE6k) buy MKwuEpRrheRwUAXsrSJ27wShUdNeUbiA6633AGfAXpr for 0.004 SOL","timestamp":"2025-02-07 19:44:40"}
+{"level":"info","message":"Executing buy transaction for wallet1...","timestamp":"2025-02-07 19:48:39"}
+{"level":"info","message":"Associated Token Address for 9ahgacYqbs1Kt7svHz8MxgFosRasWqYR32zbrxyQAE6k: Df1Tb12tykF2vq3kpU5w1ictGJDBaUob4JkmVCcPaXdW","timestamp":"2025-02-07 19:48:39"}
+{"level":"info","message":"Minting 0.002 tokens (2000000 base units)","timestamp":"2025-02-07 19:48:39"}
+{"level":"info","message":"Minted tokens txhash: 4w8wTbparRMJ2RL5JPzHeZ2THAK7FTSKJBRMJX8B2Z6SgQ7en2HzF7SrnFrp9J5NWvFYUoUrZnDGKpGkTEaqd8xQ","timestamp":"2025-02-07 19:48:40"}
+{"level":"info","message":"Successfully executed buy transaction for wallet1","timestamp":"2025-02-07 19:48:40"}
+{"level":"info","message":"Wallet loaded successfully: wallet1","timestamp":"2025-02-07 19:48:40"}
+{"level":"info","message":"Wallet loaded successfully: wallet1","timestamp":"2025-02-07 19:48:40"}
+{"level":"info","message":"Waiting 238.26 seconds for next transaction...","timestamp":"2025-02-07 19:48:40"}
+{"level":"info","message":"recordTransaction walletId: wallet1, Token: MKwuEpRrheRwUAXsrSJ27wShUdNeUbiA6633AGfAXpr, Action: buy, Amount: 0.002","timestamp":"2025-02-07 19:48:41"}
+{"level":"info","message":"Transaction recorded: Wallet wallet1 (9ahgacYqbs1Kt7svHz8MxgFosRasWqYR32zbrxyQAE6k) buy MKwuEpRrheRwUAXsrSJ27wShUdNeUbiA6633AGfAXpr for 0.002 SOL","timestamp":"2025-02-07 19:48:41"}
+{"level":"info","message":"Executing sell transaction for wallet1...","timestamp":"2025-02-07 19:52:39"}
+{"level":"info","message":"Associated Token Address for 9ahgacYqbs1Kt7svHz8MxgFosRasWqYR32zbrxyQAE6k: Df1Tb12tykF2vq3kpU5w1ictGJDBaUob4JkmVCcPaXdW","timestamp":"2025-02-07 19:52:39"}
+{"level":"info","message":"Burning 0.005 tokens (5000000 base units)","timestamp":"2025-02-07 19:52:39"}
+{"level":"info","message":"Burned tokens txhash: 4ByAzhWJ6o2LGQ93iP7PudHU88vBxXBZHQttAZoNYE76hdN3WmSNwZoM7qrKKXohFgn3Aj6jvUorhYKkmMqJiF3e","timestamp":"2025-02-07 19:52:44"}
+{"level":"info","message":"Successfully executed sell transaction for wallet1","timestamp":"2025-02-07 19:52:44"}
+{"level":"info","message":"Wallet loaded successfully: wallet1","timestamp":"2025-02-07 19:52:44"}
+{"level":"info","message":"Wallet loaded successfully: wallet1","timestamp":"2025-02-07 19:52:44"}
+{"level":"info","message":"Waiting 114.969 seconds for next transaction...","timestamp":"2025-02-07 19:52:44"}
+{"level":"info","message":"recordTransaction walletId: wallet1, Token: MKwuEpRrheRwUAXsrSJ27wShUdNeUbiA6633AGfAXpr, Action: sell, Amount: 0.005","timestamp":"2025-02-07 19:52:44"}
+{"level":"info","message":"Transaction recorded: Wallet wallet1 (9ahgacYqbs1Kt7svHz8MxgFosRasWqYR32zbrxyQAE6k) sell MKwuEpRrheRwUAXsrSJ27wShUdNeUbiA6633AGfAXpr for 0.005 SOL","timestamp":"2025-02-07 19:52:44"}
+{"level":"info","message":"Executing buy transaction for wallet1...","timestamp":"2025-02-07 19:54:39"}
+{"level":"info","message":"Initial wallet 9ahgacYqbs1Kt7svHz8MxgFosRasWqYR32zbrxyQAE6k Token Account not found, creating new one","timestamp":"2025-02-07 19:54:39"}
+{"level":"info","message":"Associated Token Address for 9ahgacYqbs1Kt7svHz8MxgFosRasWqYR32zbrxyQAE6k: H15Y8Q93ax4izAZMoJgDmixk1qqSEVJrWTkzFkRwRnka","timestamp":"2025-02-07 19:54:40"}
+{"level":"info","message":"Minting 0.002 tokens (2000000 base units)","timestamp":"2025-02-07 19:54:40"}
+{"level":"info","message":"Minted tokens txhash: 5iWm9NBrjJdbZenAdUFWTwD7rcBFL63MpTgXULUBGPEhBzRYRBf3v6eCq2fm2LzAcYtrPEGbJ14EUke7aU8g2pvy","timestamp":"2025-02-07 19:54:40"}
+{"level":"info","message":"Successfully executed buy transaction for wallet1","timestamp":"2025-02-07 19:54:40"}
+{"level":"info","message":"Wallet loaded successfully: wallet2","timestamp":"2025-02-07 19:54:40"}
+{"level":"info","message":"Wallet loaded successfully: wallet1","timestamp":"2025-02-07 19:54:40"}
+{"level":"info","message":"Waiting 358.447 seconds for next transaction...","timestamp":"2025-02-07 19:54:40"}
+{"level":"info","message":"Executing buy transaction for wallet2...","timestamp":"2025-02-07 20:00:39"}
+{"level":"info","message":"Associated Token Address for 9kF1sGUSjeHQ31eFa7SuqvuGEHQLZYywGDjQrLTHEjFW: CsKBsor6epcKTHRGzC1sKUjiyCzDJgHtsDSjcVFfH6SG","timestamp":"2025-02-07 20:00:39"}
+{"level":"info","message":"Minting 0.0005 tokens (500000 base units)","timestamp":"2025-02-07 20:00:39"}
+{"level":"info","message":"Minted tokens txhash: yJV1CDGALTB2FvegThCDPTMyP7ypwdiE23fhPZZvDAstUZYNcCWV7zHXKnzjf9EuhbEtLFtfiRoqfTBACFFc4Kx","timestamp":"2025-02-07 20:00:40"}
+{"level":"info","message":"Successfully executed buy transaction for wallet2","timestamp":"2025-02-07 20:00:40"}
+{"level":"info","message":"Wallet loaded successfully: wallet2","timestamp":"2025-02-07 20:00:40"}
+{"level":"info","message":"Wallet loaded successfully: wallet1","timestamp":"2025-02-07 20:00:40"}
+{"level":"info","message":"Waiting 238.46 seconds for next transaction...","timestamp":"2025-02-07 20:00:40"}
+{"level":"info","message":"recordTransaction walletId: wallet2, Token: MKwuEpRrheRwUAXsrSJ27wShUdNeUbiA6633AGfAXpr, Action: buy, Amount: 0.0005","timestamp":"2025-02-07 20:00:40"}
+{"level":"info","message":"Transaction recorded: Wallet wallet2 (9kF1sGUSjeHQ31eFa7SuqvuGEHQLZYywGDjQrLTHEjFW) buy MKwuEpRrheRwUAXsrSJ27wShUdNeUbiA6633AGfAXpr for 0.0005 SOL","timestamp":"2025-02-07 20:00:40"}
+{"level":"info","message":"Qualifying Activity Detected!","timestamp":"2025-02-07 20:00:40"}
+{"level":"info","message":"buy MKwuEpRrheRwUAXsrSJ27wShUdNeUbiA6633AGfAXpr","timestamp":"2025-02-07 20:00:40"}
+{"level":"info","message":"2 wallets performed this action within the time window","timestamp":"2025-02-07 20:00:40"}
+{"level":"info","message":"Executing copy trade:","timestamp":"2025-02-07 20:00:40"}
+{"level":"info","message":"Wallet: FkFPuQwnCYhSoiRt3ysBZzpmXFT4Wr68HzZ5rAEkBsNZ","timestamp":"2025-02-07 20:00:40"}
+{"level":"info","message":"Action: buy","timestamp":"2025-02-07 20:00:40"}
+{"level":"info","message":"Token: MKwuEpRrheRwUAXsrSJ27wShUdNeUbiA6633AGfAXpr","timestamp":"2025-02-07 20:00:40"}
+{"level":"info","message":"Amount: 0.001 SOL","timestamp":"2025-02-07 20:00:40"}
+{"level":"info","message":"Token Name: XyzToken","timestamp":"2025-02-07 20:00:40"}
+{"level":"info","message":"Wallet loaded successfully: wallet1","timestamp":"2025-02-07 20:00:40"}
+{"level":"info","message":"Associated Token Address for FkFPuQwnCYhSoiRt3ysBZzpmXFT4Wr68HzZ5rAEkBsNZ: 14WH7PbiFxFf5xtaW2Tzj9wjY44RvuALXcLCh1rLHJov","timestamp":"2025-02-07 20:00:41"}
+{"level":"info","message":"Minting 0.001 tokens (1000000 base units)","timestamp":"2025-02-07 20:00:41"}
+{"level":"info","message":"Minted tokens txhash: 4u76pjL6hP4acm1WCyJyYJZMBcTwwtgmudFegLbPbvL1eiw9XoHSF7CTAHghorQThF42gp7Cb1GKeu7m4G1v9T3P","timestamp":"2025-02-07 20:00:41"}
+{"level":"info","message":"Copy trade executed successfully","timestamp":"2025-02-07 20:00:41"}
+{"level":"info","message":"Executing buy transaction for wallet2...","timestamp":"2025-02-07 20:04:39"}
+{"level":"info","message":"Initial wallet 9kF1sGUSjeHQ31eFa7SuqvuGEHQLZYywGDjQrLTHEjFW Token Account not found, creating new one","timestamp":"2025-02-07 20:04:39"}
+{"level":"info","message":"Associated Token Address for 9kF1sGUSjeHQ31eFa7SuqvuGEHQLZYywGDjQrLTHEjFW: 9DLjik9vVPo9me6Y5D77sYfZ6FxKKUQnNJauNX2iDN1Z","timestamp":"2025-02-07 20:04:42"}
+{"level":"info","message":"Minting 0.0015 tokens (1500000 base units)","timestamp":"2025-02-07 20:04:42"}
+{"level":"info","message":"Minted tokens txhash: 2RYw1rF1YX7evY3wDAt6Bk7oo8ShoCiH4pa1fJaW4YKU21549StbwDwtz4cqGqdjz8EU7VuZwYLxWzCMk2pEFrP2","timestamp":"2025-02-07 20:04:42"}
+{"level":"info","message":"Successfully executed buy transaction for wallet2","timestamp":"2025-02-07 20:04:42"}
+{"level":"info","message":"Test transactions completed successfully","timestamp":"2025-02-07 20:04:42"}

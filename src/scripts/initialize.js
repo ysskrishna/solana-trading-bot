@@ -5,6 +5,7 @@ const { TokenManager } = require('@src/core/token-manager');
 const { Config } = require('@src/core/config');
 const logger = require('@src/core/logger');
 
+
 async function initialize() {
     // Create and setup wallets for monitoring
     await createWallet("wallet1");
@@ -33,13 +34,19 @@ async function initialize() {
     // Initialize token manager
     const tokenManager = new TokenManager();
 
-    // Create a test token - with wallet1 as the creator
+    
     try {
-        const testToken = await tokenManager.createToken(wallet1, Config.tokenName);
-        logger.info("Test token created successfully");
+        // create xyztoken
+        const xyzTokenResult = await tokenManager.createToken(wallet1, Config.xyzToken);
+        logger.info("xyzToken created successfully");
+
+        // create abctoken
+        const abcTokenResult = await tokenManager.createToken(wallet1, Config.abcToken);
+        logger.info("abcToken created successfully");
     } catch (error) {
         logger.error("Error creating test token:", error);
     }
+
 }
 
 // Handle any unhandled promise rejections
