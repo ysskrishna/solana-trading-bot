@@ -19,7 +19,6 @@ A sophisticated trading bot for Solana that monitors wallet activities and perfo
 - NPM (Node Package Manager)
 - Basic understanding of Solana blockchain and SPL tokens
 
-
 ## Installation
 
 1. Clone the repository:
@@ -53,21 +52,21 @@ This will:
 npm start
 ```
 
-2. The bot will:
+The bot will:
 - Monitor specified wallets for token transactions
 - Track token minting and burning operations
 - Execute copy trades when threshold conditions are met
 - Provide real-time logging of activities
 
-## Testing
-
-Run different test scenarios:
+2. To run test scenarios, use the following commands and run it in seperate terminal:
 ```bash
 npm run test:case1  # Test scenario 1
 npm run test:case2  # Test scenario 2
 npm run test:case3  # Test scenario 3
 npm run test:case4  # Test scenario 4
 ```
+
+> **Note**: Ensure the main trading bot is running before executing any test scenarios.
 
 ## Project Structure
 
@@ -78,17 +77,19 @@ solana-trading-bot/
 │   │   ├── trade-monitor.js  # Trade monitoring logic
 │   │   ├── token-manager.js  # Token management
 │   │   ├── wallets.js       # Wallet operations
-│   │   └── config.js       # Application configuration
-│   └── scripts/          # Utility scripts
-│       ├── initialize.js  # Setup script
-│       └── run-tests.js  # Test runner
-├── data/                 # Data storage
-│   ├── wallets/         # Wallet files
-│   └── tokens/          # Token configuration
+│   │   ├── logger.js        # Logging functionality
+│   │   └── config.js        # Application configuration
+│   └── scripts/           # Utility scripts
+│       ├── initialize.js   # Setup script
+│       └── run-tests.js   # Test runner
+├── data/                  # Data storage
+│   ├── wallets/          # Wallet files
+│   └── tokens/           # Token configuration
+├── logs/                 # Application logs
+│   └── app.log          # Main log file
 ├── index.js             # Application entry point
 ├── package.json         # Project metadata and dependencies
-├── package-lock.json    # Dependency lock file
-└── README.md           # Project documentation
+└── README.md          # Project documentation
 ```
 
 The project is organized into logical modules:
@@ -97,6 +98,7 @@ The project is organized into logical modules:
   - `core/`: Core business logic modules and configuration
   - `scripts/`: Utility scripts
 - `data/`: Data storage for wallets and tokens
+- `logs/`: Application logging directory
 
 ## Security Considerations
 

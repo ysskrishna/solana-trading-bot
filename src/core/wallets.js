@@ -1,6 +1,7 @@
 const { Keypair, Connection, clusterApiUrl, PublicKey, LAMPORTS_PER_SOL } = require('@solana/web3.js');
 const { TOKEN_PROGRAM_ID } = require('@solana/spl-token');
 const fs = require('fs');
+const path = require('path');
 const { Config } = require('@src/core/config');
 const logger = require('@src/core/logger');
 
@@ -15,7 +16,7 @@ async function loadWalletsFromDirectory() {
         for (const walletFile of walletFiles) {
             const walletId = walletFile.split('.')[0]; // Remove file extension
             const walletData = JSON.parse(
-                fs.readFileSync(`${WALLETS_DIR}/${walletFile}`, 'utf8')
+                fs.readFileSync(path.join(WALLETS_DIR, walletFile), 'utf8')
             );
             wallets[walletId] = walletData;
         }
@@ -122,7 +123,7 @@ async function createWallet(walletId) {
             fs.mkdirSync(WALLETS_DIR, { recursive: true });
         }
         
-        fs.writeFileSync(`${WALLETS_DIR}/${walletId}.json`, JSON.stringify(walletData, null, 2));
+        fs.writeFileSync(path.join(WALLETS_DIR, `${walletId}.json`), JSON.stringify(walletData, null, 2));
         logger.info(`Wallet created successfully - ID: ${walletId}, Address: ${keypair.publicKey.toString()}`);
         return walletData;
     } catch (error) {
@@ -133,7 +134,7 @@ async function createWallet(walletId) {
 
 async function loadWalletByWalletId(walletId) {
     try {
-        const walletPath = `${WALLETS_DIR}/${walletId}.json`;
+        const walletPath = path.join(WALLETS_DIR, `${walletId}.json`);
         if (!fs.existsSync(walletPath)) {
             throw new Error(`Wallet ${walletId} not found`);
         }

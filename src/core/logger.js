@@ -1,12 +1,11 @@
 const winston = require('winston');
 const path = require('path');
 const fs = require('fs');
-const appRoot = require('app-root-path');
+const { Config } = require('./config');
 
-// Ensure logs directory exists at the root directory
-const logsDir = path.join(appRoot.path, 'logs');
-if (!fs.existsSync(logsDir)) {
-    fs.mkdirSync(logsDir, { recursive: true });
+// Ensure logs directory exists
+if (!fs.existsSync(Config.logsDirectory)) {
+    fs.mkdirSync(Config.logsDirectory, { recursive: true });
 }
 
 // Custom timestamp format
@@ -22,7 +21,7 @@ const logger = winston.createLogger({
     ),
     transports: [
         new winston.transports.File({ 
-            filename: path.join(logsDir, 'app.log')
+            filename: path.join(Config.logsDirectory, 'app.log')
         })
     ]
 });

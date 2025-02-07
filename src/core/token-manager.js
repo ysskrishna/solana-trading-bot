@@ -1,6 +1,7 @@
 const { Connection, clusterApiUrl, PublicKey, Keypair } = require('@solana/web3.js');
 const { createMint, createAssociatedTokenAccount, getAssociatedTokenAddress, mintToChecked, getMint, burnChecked } = require('@solana/spl-token');
 const fs = require('fs');
+const path = require('path');
 const { Config } = require('@src/core/config');
 const logger = require('@src/core/logger');
 
@@ -70,14 +71,14 @@ class TokenManager {
 
     // Save token information to disk
     saveTokenInfo(name, tokenInfo) {
-        const filename = `${this.tokensDirectory}/${name}.json`;
+        const filename = path.join(this.tokensDirectory, `${name}.json`);
         fs.writeFileSync(filename, JSON.stringify(tokenInfo, null, 2));
     }
 
     // Load token information from disk
     loadTokenInfo(name) {
         try {
-            const filename = `${this.tokensDirectory}/${name}.json`;
+            const filename = path.join(this.tokensDirectory, `${name}.json`);
             if (!fs.existsSync(filename)) {
                 throw new Error(`Token ${name} not found`);
             }
