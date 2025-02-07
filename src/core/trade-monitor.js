@@ -1,7 +1,7 @@
 const { Connection, clusterApiUrl, PublicKey, LAMPORTS_PER_SOL, Keypair } = require('@solana/web3.js');
-const { TokenManager } = require('./token-manager');
-const { Config } = require('./config');
 const { TOKEN_PROGRAM_ID } = require('@solana/spl-token');
+const { TokenManager } = require('@src/core/token-manager');
+const { Config } = require('@src/core/config');
 
 class TradeMonitor {
     constructor(wallets, copyWallet, threshold, timeWindow) {

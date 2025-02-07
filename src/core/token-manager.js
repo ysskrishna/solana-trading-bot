@@ -1,7 +1,7 @@
 const { Connection, clusterApiUrl, PublicKey, Keypair } = require('@solana/web3.js');
 const { createMint, createAssociatedTokenAccount, getAssociatedTokenAddress, mintToChecked, getMint, burnChecked } = require('@solana/spl-token');
 const fs = require('fs');
-const { Config } = require('./config');
+const { Config } = require('@src/core/config');
 
 class TokenManager {
     TOKEN_DECIMALS = 9;

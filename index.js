@@ -1,6 +1,9 @@
-const { loadWalletByWalletId, loadWalletsFromDirectory, checkBalancesForWallets } = require('./src/core/wallets');
-const { TradeMonitor } = require('./src/core/trade-monitor');
-const { Config } = require('./src/core/config');
+require('module-alias/register');
+
+const { loadWalletByWalletId, loadWalletsFromDirectory, checkBalancesForWallets } = require('@src/core/wallets');
+const { TradeMonitor } = require('@src/core/trade-monitor');
+const { Config } = require('@src/core/config');
+
 
 async function loadMonitoredWallets() {
     let monitoredWallets = {};

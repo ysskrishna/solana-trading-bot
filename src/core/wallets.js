@@ -1,7 +1,7 @@
 const { Keypair, Connection, clusterApiUrl, PublicKey, LAMPORTS_PER_SOL } = require('@solana/web3.js');
 const { TOKEN_PROGRAM_ID } = require('@solana/spl-token');
 const fs = require('fs');
-const { Config } = require('./config');
+const { Config } = require('@src/core/config');
 
 
 const WALLETS_DIR = Config.walletsDirectory;

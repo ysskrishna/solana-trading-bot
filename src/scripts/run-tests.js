@@ -1,6 +1,8 @@
-const { loadWalletByWalletId } = require('../core/wallets');
-const { TokenManager } = require('../core/token-manager');
-const { Config } = require('../core/config');
+require('module-alias/register');
+
+const { loadWalletByWalletId } = require('@src/core/wallets');
+const { TokenManager } = require('@src/core/token-manager');
+const { Config } = require('@src/core/config');
 
 class TestRunner {
     constructor() {
