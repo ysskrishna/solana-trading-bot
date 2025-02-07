@@ -3,7 +3,7 @@ require('module-alias/register');
 const { loadWalletByWalletId, loadWalletsFromDirectory, checkBalancesForWallets } = require('@src/core/wallets');
 const { TradeMonitor } = require('@src/core/trade-monitor');
 const { Config } = require('@src/core/config');
-
+const logger = require('@src/core/logger');
 
 async function loadMonitoredWallets() {
     let monitoredWallets = {};
@@ -14,16 +14,13 @@ async function loadMonitoredWallets() {
     return monitoredWallets;
 }
 
-
 async function main() {
     let allWallets = await loadWalletsFromDirectory();
-    console.log(`Logging wallet balances for all ${allWallets.length} wallets`);
+    logger.info(`Logging wallet balances for all ${Object.keys(allWallets).length} wallets`);
     await checkBalancesForWallets(allWallets);
-
 
     let monitoredWallets = await loadMonitoredWallets();
     const copyWallet = await loadWalletByWalletId(Config.copyWalletId);
-
 
     // console.log("Monitored wallets:", monitoredWallets);
     // console.log("Copy wallet:", copyWallet);
@@ -32,14 +29,22 @@ async function main() {
     // Start monitoring
     const tradeMonitor = new TradeMonitor(monitoredWallets, copyWallet, Config.threshold, Config.timeWindow);
     await tradeMonitor.startMonitoring();
-    console.log('Monitoring service is running. Press Ctrl+C to stop.');
+    logger.info('Monitoring service is running. Press Ctrl+C to stop.');
 
     // Handle graceful shutdown
     process.on('SIGINT', async () => {
-        console.log('\nReceived SIGINT. Cleaning up...');
+        logger.info('Received SIGINT. Cleaning up...');
         await tradeMonitor.stopMonitoring();
         process.exit(0);
     });
 }
 
-main().catch(console.error);
+// Handle any unhandled promise rejections
+process.on('unhandledRejection', (error) => {
+    logger.error('Unhandled promise rejection:', error);
+});
+
+// Run the main function
+main().catch((error) => {
+    logger.error('Application failed:', error);
+});

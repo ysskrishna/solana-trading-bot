@@ -3,6 +3,7 @@ require('module-alias/register');
 const { loadWalletByWalletId } = require('@src/core/wallets');
 const { TokenManager } = require('@src/core/token-manager');
 const { Config } = require('@src/core/config');
+const logger = require('@src/core/logger');
 
 class TestRunner {
     constructor() {
@@ -10,7 +11,7 @@ class TestRunner {
     }
 
     async runTest(testCase) {
-        console.log(`\nRunning Test Case ${testCase}:`);
+        logger.info(`Running Test Case ${testCase}:`);
         const transactions = this.getTestTransactions(testCase);
         await this.executeTestTransactions(transactions);
     }
@@ -50,26 +51,22 @@ class TestRunner {
             default:
                 throw new Error('Invalid test case number');
         }
-
     }
 
     async executeTestTransactions(transactions) {
         const mintAuthorityWallet = await loadWalletByWalletId("wallet1");
         let startTime = Date.now();
 
-
-
         for (const tx of transactions) {
             const wallet = await loadWalletByWalletId(tx.walletId);
             const timeToWait = (tx.time * 60 * 1000) - (Date.now() - startTime);
-            
 
             if (timeToWait > 0) {
-                console.log(`Waiting ${timeToWait/1000} seconds for next transaction...`);
+                logger.info(`Waiting ${timeToWait/1000} seconds for next transaction...`);
                 await new Promise(resolve => setTimeout(resolve, timeToWait));
             }
 
-            console.log(`\nExecuting ${tx.action} transaction for ${tx.walletId}...`);
+            logger.info(`Executing ${tx.action} transaction for ${tx.walletId}...`);
             await this.tokenManager.executeTokenTransaction(
                 wallet,
                 tx.token,
@@ -77,7 +74,7 @@ class TestRunner {
                 mintAuthorityWallet,
                 tx.amount
             );            
-            console.log(`Successfully executed ${tx.action} transaction for ${tx.walletId}`);
+            logger.info(`Successfully executed ${tx.action} transaction for ${tx.walletId}`);
         }
     }
 }
@@ -85,8 +82,8 @@ class TestRunner {
 async function main() {
     const testCase = process.argv[2];
     if (!testCase || !['1', '2', '3', '4'].includes(testCase)) {
-        console.error('Please specify a test case number (1 or 2)');
-        console.log('Usage: node run-tests.js <test-case-number>');
+        logger.error('Please specify a test case number (1, 2, 3, or 4)');
+        logger.info('Usage: node run-tests.js <test-case-number>');
         process.exit(1);
     }
 
@@ -94,12 +91,19 @@ async function main() {
 
     try {
         await testRunner.runTest(testCase);
-        console.log('\nTest transactions completed successfully');
+        logger.info('Test transactions completed successfully');
     } catch (error) {
-        console.error('Error running test:', error);
+        logger.error('Error running test:', error);
         process.exit(1);
     }
 }
 
+// Handle any unhandled promise rejections
+process.on('unhandledRejection', (error) => {
+    logger.error('Unhandled promise rejection:', error);
+});
+
 // Run the tests
-main().catch(console.error); 
+main().catch((error) => {
+    logger.error('Test execution failed:', error);
+}); 

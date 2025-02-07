@@ -2,6 +2,7 @@ const { Connection, clusterApiUrl, PublicKey, LAMPORTS_PER_SOL, Keypair } = requ
 const { TOKEN_PROGRAM_ID } = require('@solana/spl-token');
 const { TokenManager } = require('@src/core/token-manager');
 const { Config } = require('@src/core/config');
+const logger = require('@src/core/logger');
 
 class TradeMonitor {
     constructor(wallets, copyWallet, threshold, timeWindow) {
@@ -36,7 +37,7 @@ class TradeMonitor {
                 programId: TOKEN_PROGRAM_ID
             });
 
-            console.log(`Found ${tokenAccounts.value.length} ATAs length for waller ${this.getPublicKey(wallet)}`);
+            logger.info(`Found ${tokenAccounts.value.length} ATAs for wallet ${this.getPublicKey(wallet)}`);
             let atas = [];
             if (tokenAccounts.value.length > 0) {
                 for (const tokenAccount of tokenAccounts.value) {
@@ -49,10 +50,10 @@ class TradeMonitor {
                 }
             }
             
-            console.log(`Fetched ${atas.length} ATAs for wallet ${this.getPublicKey(wallet)}`);
+            logger.info(`Fetched ${atas.length} ATAs for wallet ${this.getPublicKey(wallet)}`);
             return atas;
         } catch (error) {
-            console.error('Error fetching ATAs:', error);
+            logger.error(`Error fetching ATAs: ${error}`);
             return [];
         }
     }
@@ -72,21 +73,19 @@ class TradeMonitor {
             );
             
             this.ataSubscriptions.set(ata.pubkey, subscriptionId);
-            console.log(`Monitoring ATA: ${ata.pubkey} for wallet ${walletId}`);
+            logger.info(`Monitoring ATA: ${ata.pubkey} for wallet ${walletId}`);
         } catch (error) {
-            console.error(`Error setting up ATA monitoring for ${ata.pubkey}:`, error);
+            logger.error(`Error setting up ATA monitoring for ${ata.pubkey}: ${error}`);
         }
     }
 
     // Handle ATA balance changes
     async handleATAChange(ata, wallet, walletId, accountInfo) {
         try {
-            // console.log("ATA balance changed for wallet: ", walletId, "ATA: ", ata, "accountInfo: ", accountInfo);
-            
             // Parse the account data
             const parsedData = await this.connection.getParsedAccountInfo(new PublicKey(ata.pubkey));
             if (!parsedData.value?.data?.parsed?.info) {
-                console.error('Unable to parse account data');
+                logger.error('Unable to parse account data');
                 return;
             }
 
@@ -108,13 +107,13 @@ class TradeMonitor {
                 ata.amount = tokenData.tokenAmount.amount; // Store as string
             }
         } catch (error) {
-            console.error('Error handling ATA change:', error);
+            logger.error(`Error handling ATA change: ${error}`);
         }
     }
 
     // Start monitoring wallets in real-time
     async startMonitoring() {
-        console.log('\nStarting real-time wallet monitoring...');
+        logger.info('Starting real-time wallet monitoring...');
         
         for (const [walletId, wallet] of Object.entries(this.wallets)) {
             if (this.getPublicKey(wallet) !== this.getPublicKey(this.copyWallet)) {
@@ -130,14 +129,14 @@ class TradeMonitor {
             return; // Already monitoring this wallet
         }
 
-        console.log(`Setting up monitoring for wallet ${walletId} (${publicKeyStr})`);
+        logger.info(`Setting up monitoring for wallet ${walletId} (${publicKeyStr})`);
         
         try {
             const publicKey = new PublicKey(publicKeyStr);
             
             // Fetch and monitor existing ATAs
             const atas = await this.fetchATAs(wallet);
-            console.log(`Fetched ${walletId} atas length: ${atas.length}`);
+            logger.info(`Fetched ${walletId} atas length: ${atas.length}`);
             for (const ata of atas) {
                 await this.monitorATA(ata, wallet, walletId);
             }
@@ -155,7 +154,7 @@ class TradeMonitor {
             this.monitoredAddresses.add(publicKeyStr);
             
         } catch (error) {
-            console.error(`Error setting up monitoring for wallet ${walletId}:`, error);
+            logger.error(`Error setting up monitoring for wallet ${walletId}: ${error}`);
         }
     }
 
@@ -166,7 +165,7 @@ class TradeMonitor {
             
             // Check for ATA creation
             if (logStr.includes('Create associated token account')) {
-                console.log(`New ATA detected for wallet ${walletId}`);
+                logger.info(`New ATA detected for wallet ${walletId}`);
                 // Refresh ATAs and set up monitoring for new ones
                 const atas = await this.fetchATAs(wallet);
                 for (const ata of atas) {
@@ -203,13 +202,13 @@ class TradeMonitor {
                 }
             }
         } catch (error) {
-            console.error('Error processing transaction logs:', error);
+            logger.error(`Error processing transaction logs: ${error}`);
         }
     }
 
     // Record a transaction and check for copy trade opportunity
     async recordTransaction(wallet, walletId, token, action, amount) {
-        console.log("recordTransaction walletId: ", walletId, ", Token: ", token, ", Action: ", action, ", Amount: ", amount);
+        logger.info(`recordTransaction walletId: ${walletId}, Token: ${token}, Action: ${action}, Amount: ${amount}`);
         const transaction = {
             wallet,
             walletId,
@@ -220,7 +219,7 @@ class TradeMonitor {
         };
         
         this.transactions.push(transaction);
-        console.log(`\nTransaction recorded: Wallet ${walletId} (${this.getPublicKey(wallet)}) ${action} ${token} for ${amount} SOL`);
+        logger.info(`Transaction recorded: Wallet ${walletId} (${this.getPublicKey(wallet)}) ${action} ${token} for ${amount} SOL`);
         
         await this.checkForCopyTrade(token, action);
     }
@@ -241,25 +240,25 @@ class TradeMonitor {
         const uniqueWallets = new Set(relevantTransactions.map(tx => tx.walletId));
 
         if (uniqueWallets.size >= this.threshold) {
-            console.log(`\nQualifying Activity Detected!`);
-            console.log(`${action} ${token}`);
-            console.log(`${uniqueWallets.size} wallets performed this action within the time window`);
+            logger.info('Qualifying Activity Detected!');
+            logger.info(`${action} ${token}`);
+            logger.info(`${uniqueWallets.size} wallets performed this action within the time window`);
             
             // Execute copy trade
             await this.executeCopyTrade(token, action);
         }
     }
 
-    // Execute a real copy trade
+    // Execute a copy trade
     async executeCopyTrade(token, action) {
-        const FIXED_TRADE_AMOUNT = 0.001; // TODO: Reduced from 0.05 SOL to 0.001 SOL. convert back
+        const FIXED_TRADE_AMOUNT = 0.001; // Fixed amount in SOL for copy trades
         
-        console.log(`\nExecuting copy trade:`);
-        console.log(`Wallet: ${this.getPublicKey(this.copyWallet)}`);
-        console.log(`Action: ${action}`);
-        console.log(`Token: ${token}`);
-        console.log(`Amount: ${FIXED_TRADE_AMOUNT} SOL`);
-        
+        logger.info('Executing copy trade:');
+        logger.info(`Wallet: ${this.getPublicKey(this.copyWallet)}`);
+        logger.info(`Action: ${action}`);
+        logger.info(`Token: ${token}`);
+        logger.info(`Amount: ${FIXED_TRADE_AMOUNT} SOL`);
+
         try {
             const mintAuthorityWallet = this.wallets["wallet1"]; // Get mint authority wallet
             await this.tokenManager.executeTokenTransaction(
@@ -269,34 +268,34 @@ class TradeMonitor {
                 mintAuthorityWallet,
                 FIXED_TRADE_AMOUNT
             );
-
-            console.log('Copy trade executed successfully');            
+            
+            logger.info('Copy trade executed successfully');
         } catch (error) {
-            console.error('Error executing copy trade:', error);
+            logger.error(`Error executing copy trade: ${error}`);
         }
     }
 
-    // Stop monitoring
+    // Stop monitoring all wallets
     async stopMonitoring() {
-        console.log('\nStopping wallet monitoring...');
+        logger.info('Stopping wallet monitoring...');
         
         // Remove wallet subscriptions
-        for (const [walletAddress, subscriptionId] of this.subscriptions) {
+        for (const [walletAddress, subscriptionId] of this.subscriptions.entries()) {
             try {
-                await this.connection.removeOnLogsListener(subscriptionId);
-                console.log(`Stopped monitoring wallet: ${walletAddress}`);
+                await this.connection.removeAccountChangeListener(subscriptionId);
+                logger.info(`Stopped monitoring wallet: ${walletAddress}`);
             } catch (error) {
-                console.error(`Error removing subscription for wallet ${walletAddress}:`, error);
+                logger.error(`Error removing subscription for wallet ${walletAddress}: ${error}`);
             }
         }
         
         // Remove ATA subscriptions
-        for (const [ataAddress, subscriptionId] of this.ataSubscriptions) {
+        for (const [ataAddress, subscriptionId] of this.ataSubscriptions.entries()) {
             try {
                 await this.connection.removeAccountChangeListener(subscriptionId);
-                console.log(`Stopped monitoring ATA: ${ataAddress}`);
+                logger.info(`Stopped monitoring ATA: ${ataAddress}`);
             } catch (error) {
-                console.error(`Error removing subscription for ATA ${ataAddress}:`, error);
+                logger.error(`Error removing subscription for ATA ${ataAddress}: ${error}`);
             }
         }
         

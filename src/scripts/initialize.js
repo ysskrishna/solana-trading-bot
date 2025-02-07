@@ -3,7 +3,7 @@ require('module-alias/register');
 const { loadWalletsFromDirectory, requestAirdropForWallet, checkBalanceForWallet, checkBalancesForWallets, createWallet } = require('@src/core/wallets');
 const { TokenManager } = require('@src/core/token-manager');
 const { Config } = require('@src/core/config');
-
+const logger = require('@src/core/logger');
 
 async function initialize() {
     // Create and setup wallets for monitoring
@@ -30,19 +30,23 @@ async function initialize() {
     await requestAirdropForWallet(copier.publicKey, 1);
     await checkBalanceForWallet(copier.publicKey);
 
-
     // Initialize token manager
     const tokenManager = new TokenManager();
-
 
     // Create a test token - with wallet1 as the creator
     try {
         const testToken = await tokenManager.createToken(wallet1, Config.tokenName);
-        console.log("Test token created successfully");
+        logger.info("Test token created successfully");
     } catch (error) {
-        console.error("Error creating test token:", error);
+        logger.error("Error creating test token:", error);
     }
-
 }
 
-initialize().catch(console.error);
+// Handle any unhandled promise rejections
+process.on('unhandledRejection', (error) => {
+    logger.error('Unhandled promise rejection:', error);
+});
+
+initialize().catch((error) => {
+    logger.error('Initialization failed:', error);
+});

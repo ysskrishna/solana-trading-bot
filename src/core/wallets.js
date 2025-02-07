@@ -2,7 +2,7 @@ const { Keypair, Connection, clusterApiUrl, PublicKey, LAMPORTS_PER_SOL } = requ
 const { TOKEN_PROGRAM_ID } = require('@solana/spl-token');
 const fs = require('fs');
 const { Config } = require('@src/core/config');
-
+const logger = require('@src/core/logger');
 
 const WALLETS_DIR = Config.walletsDirectory;
 
@@ -10,7 +10,7 @@ async function loadWalletsFromDirectory() {
     let wallets = {};
     try {
         const walletFiles = fs.readdirSync(WALLETS_DIR);        
-        console.log('Loading wallets...\n');
+        logger.info('Loading wallets...');
         
         for (const walletFile of walletFiles) {
             const walletId = walletFile.split('.')[0]; // Remove file extension
@@ -21,25 +21,23 @@ async function loadWalletsFromDirectory() {
         }
 
     } catch (error) {
-        console.error('Error checking wallets:', error);
+        logger.error(`Error checking wallets: ${error.message}`);
     }
     return wallets;
 }
 
 async function checkBalancesForWallets(wallets) {
     try {
-        console.log('Checking wallet balances...\n');
+        logger.info('Checking wallet balances...');
         
         for (const [walletId, walletData] of Object.entries(wallets)) {
-            console.log(`\nChecking wallet: ${walletId}`);
+            logger.info(`Checking wallet: ${walletId}`);
             await checkBalanceForWallet(walletData.publicKey);
         }
     } catch (error) {
-        console.error('Error checking wallets:', error);
+        logger.error('Error checking wallets:', { error: error.message });
     }
 }
-
-
 
 // Function to check a single wallet balance
 async function checkBalanceForWallet(walletAddress) {
@@ -51,8 +49,7 @@ async function checkBalanceForWallet(walletAddress) {
         // Get SOL balance
         const balance = await connection.getBalance(publicKey);
         
-        console.log(`\nWallet Address: ${walletAddress}`);
-        console.log(`SOL Balance: ${balance / LAMPORTS_PER_SOL} SOL`);
+        logger.info(`Wallet balance details - Address: ${walletAddress}, Balance: ${balance}`);
         
         // Get all token accounts
         const tokenAccounts = await connection.getParsedTokenAccountsByOwner(
@@ -61,18 +58,17 @@ async function checkBalanceForWallet(walletAddress) {
         );
         
         if (tokenAccounts.value.length > 0) {
-            console.log('\nToken Balances:');
             for (const tokenAccount of tokenAccounts.value) {
                 const accountData = tokenAccount.account.data.parsed.info;
-                console.log(`- Token: ${accountData.mint}`);
-                console.log(`  Amount: ${accountData.tokenAmount.uiAmount}`);
+                const tokenBalance = accountData.tokenAmount.uiAmount;
+                logger.info(`Token balance for ${walletAddress}: ${tokenBalance}`);
             }
         } else {
-            console.log('No token accounts found');
+            logger.info(`No token accounts found for wallet: ${walletAddress}`);
         }
         
     } catch (error) {
-        console.error('Error checking balance:', error);
+        logger.error(`Error checking balance: ${error.message}`);
     }
 }
 
@@ -81,7 +77,7 @@ async function requestAirdropForWallet(walletAddress, solAmount = 1) {
         const connection = new Connection(clusterApiUrl(Config.network), 'confirmed');
         const publicKey = new PublicKey(walletAddress);
         
-        console.log(`Requesting airdrop of ${solAmount} SOL for wallet: ${walletAddress}`);
+        logger.info(`Requesting airdrop of ${solAmount} SOL to ${walletAddress}`);
         
         const signature = await connection.requestAirdropForWallet(
             publicKey,
@@ -89,27 +85,27 @@ async function requestAirdropForWallet(walletAddress, solAmount = 1) {
         );
         
         await connection.confirmTransaction(signature);
-        console.log('Airdrop successful!');
+        logger.info(`Airdrop successful to wallet: ${walletAddress}`);
         
         // Check and display new balance
         const newBalance = await connection.getBalance(publicKey);
-        console.log(`New balance: ${newBalance / LAMPORTS_PER_SOL} SOL`);
+        logger.info(`New balance after airdrop: ${newBalance}`);
         
     } catch (error) {
-        console.error('Error requesting airdrop:', error);
+        logger.error(`Error requesting airdrop: ${error.message}`);
     }
 }
 
 async function requestAirdropForWallets(wallets, solAmount = 1) {
     try {
-        console.log(`Requesting ${solAmount} SOL airdrop for all wallets...\n`);
+        logger.info(`Requesting airdrop for all wallets: ${solAmount} SOL`);
         
         for (const [walletId, walletData] of Object.entries(wallets)) {
-            console.log(`\nProcessing wallet: ${walletId}`);
+            logger.info(`Processing wallet for airdrop: ${walletId}`);
             await requestAirdropForWallet(walletData.publicKey, solAmount);
         }
     } catch (error) {
-        console.error('Error requesting airdrops:', error);
+        logger.error(`Error requesting airdrops: ${error.message}`);
     }
 }
 
@@ -127,10 +123,10 @@ async function createWallet(walletId) {
         }
         
         fs.writeFileSync(`${WALLETS_DIR}/${walletId}.json`, JSON.stringify(walletData, null, 2));
-        console.log(`Created wallet: ${walletId}`);
+        logger.info(`Wallet created successfully - ID: ${walletId}, Address: ${keypair.publicKey.toString()}`);
         return walletData;
     } catch (error) {
-        console.error('Error creating wallet:', error);
+        logger.error(`Error creating wallet: ${error.message}`);
         throw error;
     }
 }
@@ -141,9 +137,11 @@ async function loadWalletByWalletId(walletId) {
         if (!fs.existsSync(walletPath)) {
             throw new Error(`Wallet ${walletId} not found`);
         }
-        return JSON.parse(fs.readFileSync(walletPath, 'utf8'));
+        const walletData = JSON.parse(fs.readFileSync(walletPath, 'utf8'));
+        logger.info(`Wallet loaded successfully: ${walletId}`);
+        return walletData;
     } catch (error) {
-        console.error(`Error loading wallet ${walletId}:`, error);
+        logger.error(`Error loading wallet: ${error.message}`);
         throw error;
     }
 }

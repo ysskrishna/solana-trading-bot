@@ -2,6 +2,7 @@ const { Connection, clusterApiUrl, PublicKey, Keypair } = require('@solana/web3.
 const { createMint, createAssociatedTokenAccount, getAssociatedTokenAddress, mintToChecked, getMint, burnChecked } = require('@solana/spl-token');
 const fs = require('fs');
 const { Config } = require('@src/core/config');
+const logger = require('@src/core/logger');
 
 class TokenManager {
     TOKEN_DECIMALS = 9;
@@ -35,7 +36,7 @@ class TokenManager {
                 this.TOKEN_DECIMALS
             );
 
-            console.log("Created mintPublicKey:", mint);
+            logger.info(`Created mintPublicKey: ${mint.toString()}`);
 
             const tokenInfo = {
                 name,
@@ -49,12 +50,12 @@ class TokenManager {
             // Save token info to disk
             this.saveTokenInfo(name, tokenInfo);
             
-            console.log(`Created new token: ${name}`);
-            console.log(`Mint address: ${mint.toString()}`);
+            logger.info(`Created new token: ${name}`);
+            logger.info(`Mint address: ${mint.toString()}`);
             
             return mint;
         } catch (error) {
-            console.error('Error creating token:', error);
+            logger.error(`Error creating token: ${error}`);
             throw error;
         }
     }
@@ -63,7 +64,7 @@ class TokenManager {
         const tokenInfo = this.loadTokenInfo(name);
         const tokenPublicKey =  new PublicKey(tokenInfo.publicKey);
         let mintAccount = await getMint(this.connection, tokenPublicKey);
-        console.log("get token mint account:", mintAccount);
+        logger.info(`Token mint account: ${mintAccount}`);
         return mintAccount;
     }
 
@@ -82,7 +83,7 @@ class TokenManager {
             }
             return JSON.parse(fs.readFileSync(filename, 'utf8'));
         } catch (error) {
-            console.error(`Error loading token ${name}:`, error);
+            logger.error(`Error loading token ${name}: ${error}`);
             throw error;
         }
     }
@@ -102,7 +103,7 @@ class TokenManager {
             
             return tokens;
         } catch (error) {
-            console.error('Error loading tokens:', error);
+            logger.error(`Error loading tokens: ${error}`);
             return {};
         }
     }
@@ -121,7 +122,7 @@ class TokenManager {
             try {
                 const tokenAccount = await this.connection.getAccountInfo(associatedTokenAddress);
                 if (!tokenAccount) {
-                    console.log(`initial wallet ${walletPublicKey} Token Account has found`);
+                    logger.info(`Initial wallet ${walletPublicKey} Token Account not found, creating new one`);
                     await createAssociatedTokenAccount(
                         this.connection,
                         keypair,
@@ -130,7 +131,7 @@ class TokenManager {
                     );
                 }
             } catch (error) {
-                console.log(`Error: creating new wallet ${walletPublicKey} Token Account`);
+                logger.info(`Creating new wallet ${walletPublicKey} Token Account`);
                 await createAssociatedTokenAccount(
                     this.connection,
                     keypair,
@@ -139,10 +140,10 @@ class TokenManager {
                 );
             }
 
-            console.log(`Associated Token Address for ${walletPublicKey}: ${associatedTokenAddress}`); 
+            logger.info(`Associated Token Address for ${walletPublicKey}: ${associatedTokenAddress}`); 
             return associatedTokenAddress;
         } catch (error) {
-            console.error('Error getting/creating associated token account:', error);
+            logger.error(`Error getting/creating associated token account: ${error}`);
             throw error;
         }
     }
@@ -158,7 +159,7 @@ class TokenManager {
             const tokenAccountAddress = await this.getOrCreateAssociatedTokenAccount(tokenInfo, wallet);
 
             const adjustedAmount = BigInt(Math.floor(amount * Math.pow(10, tokenInfo.decimals)));
-            console.log(`Minting ${amount} tokens (${adjustedAmount} base units)`);
+            logger.info(`Minting ${amount} tokens (${adjustedAmount} base units)`);
             
             let txhash = await mintToChecked(
                 this.connection,
@@ -169,10 +170,10 @@ class TokenManager {
                 adjustedAmount,
                 tokenInfo.decimals
             );
-            console.log(`Minted tokens txhash: ${txhash}`);
+            logger.info(`Minted tokens txhash: ${txhash}`);
 
         } catch (error) {
-            console.error('Error minting tokens:', error);
+            logger.error(`Error minting tokens: ${error}`);
             throw error;
         }
     }
@@ -183,7 +184,7 @@ class TokenManager {
             const tokenAccountAddress = await this.getOrCreateAssociatedTokenAccount(tokenInfo, wallet);
             
             const adjustedAmount = BigInt(Math.floor(amount * Math.pow(10, tokenInfo.decimals)));
-            console.log(`Burning ${amount} tokens (${adjustedAmount} base units)`);
+            logger.info(`Burning ${amount} tokens (${adjustedAmount} base units)`);
             
             let txhash = await burnChecked(
                 this.connection,
@@ -194,10 +195,10 @@ class TokenManager {
                 adjustedAmount,
                 tokenInfo.decimals
             );
-            console.log(`Burned tokens txhash: ${txhash}`);
+            logger.info(`Burned tokens txhash: ${txhash}`);
 
         } catch (error) {
-            console.error('Error burning tokens:', error);
+            logger.error(`Error burning tokens: ${error}`);
             throw error;
         }
     }
@@ -213,7 +214,7 @@ class TokenManager {
                 throw new Error(`Invalid action: ${action}. Must be 'buy' or 'sell'`);
             }
         } catch (error) {
-            console.error('Error executing token transaction:', error);
+            logger.error(`Error executing token transaction: ${error}`);
             throw error;
         }
     }
