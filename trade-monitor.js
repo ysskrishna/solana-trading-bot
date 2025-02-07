@@ -74,9 +74,8 @@ class TradeMonitor {
         console.log('\nExecuting first buy transaction...');
         await this.executeTokenTransaction(walletA, tokenInfo, 'buy', mintAuthorityWallet, 0.002);
 
-
-        // console.log('\nExecuting second buy transaction...');
-        // await this.executeTokenTransaction(walletB, tokenInfo, 'buy', mintAuthorityWallet, 0.001);
+        console.log('\nExecuting second buy transaction...');
+        await this.executeTokenTransaction(walletB, tokenInfo, 'buy', mintAuthorityWallet, 0.001);
 
 
         // Keep monitoring for a while to see the results
@@ -147,16 +146,28 @@ class TradeMonitor {
     async handleTransactionLogs(wallet, walletId, logs, ctx) {
         try {
             const logStr = logs.logs.join('\n');
+            console.log("walletId: ", walletId, "Log string: ", logStr);
             
-            if (logStr.includes('Transfer') || logStr.includes('transfer')) {
-                let action = 'buy';
-                if (logStr.includes('out')) action = 'sell';
+            // Check for mint or burn operations
+            if (logStr.includes('Instruction: MintToChecked')) {
+                const action = 'buy';  // MintToChecked indicates a buy action
+                console.log(`Wallet ${walletId} (${this.getPublicKey(wallet)}) Action: ${action}`);
+
+                // Extract token information
+                const tokenMatch = logStr.match(/token:?\s*([A-Za-z0-9]{32,})/i);
+                const token = tokenMatch ? tokenMatch[1] : Config.tokenName; // Default to configured token if not found
+
+                // Extract amount if available
+                const amountMatch = logStr.match(/amount:?\s*([\d.]+)/i);
+                const amount = amountMatch ? parseFloat(amountMatch[1]) : 0;
+
+                await this.recordTransaction(wallet, walletId, token, action, amount);
+            } else if (logStr.includes('Instruction: BurnChecked')) {
+                const action = 'sell';  // BurnChecked indicates a sell action
                 console.log(`Wallet ${walletId} (${this.getPublicKey(wallet)}) Action: ${action}`);
 
                 const tokenMatch = logStr.match(/token:?\s*([A-Za-z0-9]{32,})/i);
-                const token = tokenMatch ? tokenMatch[1] : 'unknown';
-
-                console.log("Identified Token: ", token);
+                const token = tokenMatch ? tokenMatch[1] : Config.tokenName;
 
                 const amountMatch = logStr.match(/amount:?\s*([\d.]+)/i);
                 const amount = amountMatch ? parseFloat(amountMatch[1]) : 0;
@@ -170,6 +181,7 @@ class TradeMonitor {
 
     // Record a transaction and check for copy trade opportunity
     async recordTransaction(wallet, walletId, token, action, amount) {
+        console.log("recordTransaction walletId: ", walletId, "Token: ", token, "Action: ", action, "Amount: ", amount);
         const transaction = {
             wallet,
             walletId,

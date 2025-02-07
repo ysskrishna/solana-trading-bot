@@ -22,8 +22,8 @@ async function main() {
     const copyWallet = await loadWalletByWalletId(Config.copyWalletId);
 
 
-    console.log("Monitored wallets:", monitoredWallets);
-    console.log("Copy wallet:", copyWallet);
+    // console.log("Monitored wallets:", monitoredWallets);
+    // console.log("Copy wallet:", copyWallet);
     
     const monitor = new TradeMonitor(monitoredWallets, copyWallet, Config.threshold, Config.timeWindow);
 
