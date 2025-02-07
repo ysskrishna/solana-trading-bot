@@ -1,6 +1,6 @@
-const { loadWalletsFromDirectory, requestAirdropForWallet, checkBalanceForWallet, checkBalancesForWallets, createWallet } = require('./wallets');
-const { TokenManager } = require('./token-manager');
-const { Config } = require('./config');
+const { loadWalletsFromDirectory, requestAirdropForWallet, checkBalanceForWallet, checkBalancesForWallets, createWallet } = require('../core/wallets');
+const { TokenManager } = require('../core/token-manager');
+const { Config } = require('../core/config');
 
 async function initialize() {
     // Create and setup wallets for monitoring
@@ -22,6 +22,11 @@ async function initialize() {
     let wallet2 = wallets["wallet2"];
     await requestAirdropForWallet(wallet2.publicKey, 1);
     await checkBalanceForWallet(wallet2.publicKey);
+
+    let copier = wallets["copier"];
+    await requestAirdropForWallet(copier.publicKey, 1);
+    await checkBalanceForWallet(copier.publicKey);
+
 
     // Initialize token manager
     const tokenManager = new TokenManager();

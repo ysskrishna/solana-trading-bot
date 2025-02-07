@@ -71,12 +71,32 @@ npm run test:case4  # Test scenario 4
 
 ## Project Structure
 
-- `index.js` - Main entry point and bot initialization
-- `trade-monitor.js` - Core trading bot logic and wallet monitoring
-- `token-manager.js` - Token creation and management
-- `wallets.js` - Wallet management utilities
-- `config.js` - Bot configuration
-- `initialize.js` - Setup and initialization script
+```
+solana-trading-bot/
+├── src/                    # Source code files
+│   ├── core/              # Core functionality
+│   │   ├── trade-monitor.js  # Trade monitoring logic
+│   │   ├── token-manager.js  # Token management
+│   │   ├── wallets.js       # Wallet operations
+│   │   └── config.js       # Application configuration
+│   └── scripts/          # Utility scripts
+│       ├── initialize.js  # Setup script
+│       └── run-tests.js  # Test runner
+├── data/                 # Data storage
+│   ├── wallets/         # Wallet files
+│   └── tokens/          # Token configuration
+├── index.js             # Application entry point
+├── package.json         # Project metadata and dependencies
+├── package-lock.json    # Dependency lock file
+└── README.md           # Project documentation
+```
+
+The project is organized into logical modules:
+
+- `src/`: Contains all source code
+  - `core/`: Core business logic modules and configuration
+  - `scripts/`: Utility scripts
+- `data/`: Data storage for wallets and tokens
 
 ## Security Considerations
 

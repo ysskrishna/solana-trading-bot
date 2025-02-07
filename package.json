@@ -9,12 +9,12 @@
   },
   "main": "index.js",
   "scripts": {
-    "initialize": "node initialize.js",
+    "initialize": "node src/scripts/initialize.js",
     "start": "node index.js",
-    "test:case1": "node run-tests.js 1",
-    "test:case2": "node run-tests.js 2",
-    "test:case3": "node run-tests.js 3",
-    "test:case4": "node run-tests.js 4"
+    "test:case1": "node src/scripts/run-tests.js 1",
+    "test:case2": "node src/scripts/run-tests.js 2",
+    "test:case3": "node src/scripts/run-tests.js 3",
+    "test:case4": "node src/scripts/run-tests.js 4"
   },
   "keywords": [
     "solana",

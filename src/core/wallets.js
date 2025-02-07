@@ -4,19 +4,18 @@ const fs = require('fs');
 const { Config } = require('./config');
 
 
+const WALLETS_DIR = Config.walletsDirectory;
+
 async function loadWalletsFromDirectory() {
     let wallets = {};
     try {
-        // Read all wallet files from the wallets directory
-        const walletFiles = fs.readdirSync('./wallets');
-
-        
+        const walletFiles = fs.readdirSync(WALLETS_DIR);        
         console.log('Loading wallets...\n');
         
         for (const walletFile of walletFiles) {
             const walletId = walletFile.split('.')[0]; // Remove file extension
             const walletData = JSON.parse(
-                fs.readFileSync(`./wallets/${walletFile}`, 'utf8')
+                fs.readFileSync(`${WALLETS_DIR}/${walletFile}`, 'utf8')
             );
             wallets[walletId] = walletData;
         }
@@ -115,27 +114,20 @@ async function requestAirdropForWallets(wallets, solAmount = 1) {
 }
 
 async function createWallet(walletId) {
-    try {        
-        // Generate a new keypair
-        const wallet = Keypair.generate();
-        
-        // Create wallet data object
+    try {
+        const keypair = Keypair.generate();
         const walletData = {
-            publicKey: wallet.publicKey.toString(),
-            secretKey: Array.from(wallet.secretKey)
+            publicKey: keypair.publicKey.toString(),
+            secretKey: Array.from(keypair.secretKey)
         };
         
-        // Ensure wallets directory exists
-        if (!fs.existsSync('./wallets')) {
-            fs.mkdirSync('./wallets');
+        // Ensure the wallets directory exists
+        if (!fs.existsSync(WALLETS_DIR)) {
+            fs.mkdirSync(WALLETS_DIR, { recursive: true });
         }
         
-        // Save to file in wallets directory
-        fs.writeFileSync(`./wallets/${walletId}.json`, JSON.stringify(walletData, null, 2));
-        
-        console.log(`Wallet "${walletId}" created successfully!`);
-        console.log('Public Key:', wallet.publicKey.toString());
-        
+        fs.writeFileSync(`${WALLETS_DIR}/${walletId}.json`, JSON.stringify(walletData, null, 2));
+        console.log(`Created wallet: ${walletId}`);
         return walletData;
     } catch (error) {
         console.error('Error creating wallet:', error);
@@ -145,21 +137,11 @@ async function createWallet(walletId) {
 
 async function loadWalletByWalletId(walletId) {
     try {
-        const walletPath = `./wallets/${walletId}.json`;
-        
-        // Check if wallet file exists
+        const walletPath = `${WALLETS_DIR}/${walletId}.json`;
         if (!fs.existsSync(walletPath)) {
-            throw new Error(`Wallet "${walletId}" not found`);
+            throw new Error(`Wallet ${walletId} not found`);
         }
-
-        // Read and parse wallet data
-        const walletData = JSON.parse(
-            fs.readFileSync(walletPath, 'utf8')
-        );
-        
-        console.log(`Loaded wallet: ${walletId}`);
-        return walletData;
-        
+        return JSON.parse(fs.readFileSync(walletPath, 'utf8'));
     } catch (error) {
         console.error(`Error loading wallet ${walletId}:`, error);
         throw error;

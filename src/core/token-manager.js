@@ -7,7 +7,7 @@ class TokenManager {
     TOKEN_DECIMALS = 9;
     constructor() {
         this.connection = new Connection(clusterApiUrl(Config.network), 'confirmed');
-        this.tokensDirectory = './tokens';
+        this.tokensDirectory = Config.tokensDirectory;
         this.ensureTokensDirectory();
     }
 
