@@ -105,6 +105,7 @@ The project is organized into logical modules:
 ## Security Considerations
 
 - Store wallet keys securely
+- Wallet files in `data/wallets/` are local. Create them with `npm run initialize`. They are gitignored and must not be committed.
 - Test thoroughly on devnet before mainnet deployment
 - Monitor wallet balances regularly
 - Keep SOL balance for transaction fees

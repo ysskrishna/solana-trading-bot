@@ -14,10 +14,18 @@ async function loadWalletsFromDirectory() {
         logger.info('Loading wallets...');
         
         for (const walletFile of walletFiles) {
-            const walletId = walletFile.split('.')[0]; // Remove file extension
-            const walletData = JSON.parse(
-                fs.readFileSync(path.join(WALLETS_DIR, walletFile), 'utf8')
-            );
+            if (!walletFile.endsWith('.json')) {
+                continue;
+            }
+            const walletId = walletFile.slice(0, -'.json'.length);
+            const walletPath = path.join(WALLETS_DIR, walletFile);
+            let walletData;
+            try {
+                walletData = JSON.parse(fs.readFileSync(walletPath, 'utf8'));
+            } catch (error) {
+                logger.error(`Skipping wallet file ${walletFile}: ${error.message}`);
+                continue;
+            }
             wallets[walletId] = walletData;
         }
 
