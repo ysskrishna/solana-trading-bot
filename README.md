@@ -1,5 +1,7 @@
 # Solana Trading Bot
 
+[![License: AGPL-3.0](https://img.shields.io/github/license/ysskrishna/solana-trading-bot)](https://github.com/ysskrishna/solana-trading-bot/blob/main/LICENSE) [![Author site](https://img.shields.io/badge/author-ysskrishna.space-informational)](https://ysskrishna.space)
+
 A sophisticated trading bot for Solana that monitors wallet activities and performs copy trading based on configurable thresholds. The bot watches specified wallets for token transactions and automatically executes similar trades when certain conditions are met.
 
 ## Features
@@ -108,14 +110,6 @@ The project is organized into logical modules:
 - Keep SOL balance for transaction fees
 - Review copy trade logic and thresholds
 
-## License
-
-This project is licensed under the AGPL-3.0 License - see the [LICENSE](LICENSE) file for details.
-
-## Author
-
-[ysskrishna](https://github.com/ysskrishna)
-
 ## Contributing
 
 1. Fork the repository
@@ -124,6 +118,32 @@ This project is licensed under the AGPL-3.0 License - see the [LICENSE](LICENSE)
 4. Push to the branch
 5. Create a new Pull Request
 
+## Built and maintained by
+
+Solana Trading Bot is built and maintained by:
+
+| | Name | GitHub | Role |
+|---|------|--------|------|
+| <img src="https://github.com/ysskrishna.png?size=120" width="60" height="60" alt="Y. Siva Sai Krishna"> | **Y. Siva Sai Krishna** | [@ysskrishna](https://github.com/ysskrishna) | Creator |
+
 ## Support
 
-For support, please open an issue in the [GitHub repository](https://github.com/ysskrishna/solana-trading-bot/issues).
+If you find this project helpful:
+
+- ⭐ Star the repository
+- 🐛 [Report issues](https://github.com/ysskrishna/solana-trading-bot/issues)
+- 🔀 Submit pull requests
+- 💝 [Sponsor on GitHub](https://github.com/sponsors/ysskrishna)
+
+## License
+
+AGPL-3.0 © [Y. Siva Sai Krishna](https://github.com/ysskrishna) — see [LICENSE](LICENSE) for details.
+
+---
+
+<p align="left">
+  <a href="https://github.com/ysskrishna">Author's GitHub</a> •
+  <a href="https://linkedin.com/in/ysskrishna">Author's LinkedIn</a> •
+  <a href="https://ysskrishna.space">Author's site</a> •
+  <a href="https://github.com/ysskrishna/solana-trading-bot/issues">Report Issues</a>
+</p>
